@@ -1,4 +1,5 @@
-.vscode/*
-public/*
-Log/*
-vendor
+**/.vscode/
+**/public/
+**/Log/
+**/vendor/
+**/.env
