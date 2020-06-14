@@ -60,7 +60,7 @@ class Controller{
     public function loadHelper($helper){
 
         $file = strtolower($helper);
-        $filename = ROOT.DS.'Core'.DS.'helpers'.DS."helper_{$file}.php";
+        $filename = ROOT.DS.'core'.DS.'helpers'.DS."helper_{$file}.php";
         if(file_exists($filename)){
             require_once($filename);
         }else{
@@ -80,11 +80,25 @@ class Controller{
         
     }
 
-    public function jsonResponse(array $json)
+    public function jsonResponse(array $json, $status = 200, $charset = 'UTF-8')
     {
         $json = json_encode($json);
+        $this->response->setStatusCode($status);
         $this->response->setContent($json);
+        $this->response->setCharset($charset);
         $this->response->headers->set('Content-Type:','application/json');
+        $this->response->send();
+    }
+
+    public function render($file, $status = 200, $charset = 'UTF-8', $headers = ['Content-type:' => 'text/html'])
+    {
+        $html = $this->view->render($file, $this->userdata);
+        $this->response->setStatusCode($status);
+        $this->response->setCharset($charset);
+        foreach($headers as $key => $value){
+            $this->response->headers->set($key, $value);
+        }
+        $this->response->setContent($html);
         $this->response->send();
     }
 
@@ -101,13 +115,6 @@ class Controller{
     public function getURL(String $route)
     {
         return $this->getUserData('url_base') . "/{$route}";
-    }
-
-    public function render($file)
-    {
-        $html = $this->view->render($file, $this->userdata);
-        $this->response->setContent($html);
-        $this->response->send();
     }
 
     public function html($file)

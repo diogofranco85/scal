@@ -64,7 +64,7 @@ final class Versions
   'symfony/polyfill-uuid' => 'v1.17.0@6dbf0269e8aeab8253a5059c51c1760fb4034e87',
   'twig/twig' => 'v2.12.5@18772e0190734944277ee97a02a9a6c6555fcd94',
   'vlucas/phpdotenv' => 'v4.1.7@db63b2ea280fdcf13c4ca392121b0b2450b51193',
-  'valorem/scal' => 'No version set (parsed as 1.0.0)@',
+  'valorem/scal' => 'dev-master@99d5e8791895bbb216cc729690b8fbc2794f8935',
 );
 
     private function __construct()
