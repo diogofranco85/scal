@@ -1,0 +1,31 @@
+{% block html %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>501 | Valorem</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link href="{{ url_base }}/assets/style.css" rel="stylesheet" type="text/css" />
+</head>
+<body class="app">
+<div class='pos-a t-0 l-0 bgc-white w-100 h-100 d-f fxd-r fxw-w ai-c jc-c pos-r p-30'>
+    <div class='mR-60'>
+        <img alt='#' src='{{ url_base }}/assets/static/images/404.png' />
+    </div>
+
+    <div class='d-f jc-c fxd-c'>
+        <h1 class='mB-30 fw-900 lh-1 c-green-500' style="font-size: 60px;">501</h1>
+        <h3 class='mB-10 fsz-lg c-grey-900 tt-c'>Oops Servidor parou de funcionar</h3>
+        <p class='mB-30 fsz-def c-grey-700'>O servidor de aplicação detectou um error e bloqueou essa aplicação.</p>
+        <div>
+            <a href="home" type='primary' class='btn btn-outline-success'>Página Inicial</a>
+        </div>
+    </div>
+</div>
+    <script type="text/javascript" src="{{ url_base }}/assets/vendor.js"></script>
+    <script type="text/javascript" src="{{ url_base }}/assets/bundle.js"></script>
+
+</body>
+</html>
+{% endblock %}

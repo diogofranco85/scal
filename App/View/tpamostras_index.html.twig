@@ -1,0 +1,161 @@
+{% extends 'page.html.twig' %}
+
+{% block css %}
+  {{ css('datatables') }}
+{% endblock %}
+
+{% block content %}
+<div class="box-header">
+  <h3 class="box-title">Listagem de tipos de amostras</h3>
+  <a href="#" class="{{ btnnew }} btnnew pull-right"><i class="{{ iconnew }}"></i> Novo</a>
+</div>
+<table class="table table-bordered table-striped dataTable compact" id="grid" data-page-length='15'>
+  <thead>
+    <tr>
+      <th>Código</th>
+      <th>Descrição</th>
+      <th>Setor</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>  
+        {% for grid in grids %}
+            <tr>
+                <td>{{ "%04d"|format(grid.id) }}</td>
+                <td>{{ grid.descricao }}</td>
+                <td>{% if grid.setor == "R"  %}
+                        RECEBIMENTO
+                    {% else %}
+                        TORRE
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="btn-group">
+                        <div class="btn-group">
+                            <a href="#" post_id="{{ grid.id }}" class="{{ btnedit }} btnedit"><i class="{{ iconedit }}"></i> Editar</a>
+                            <a href="#" post_id="{{ grid.id }}" class="{{ btnexc }} btndel"><i class="{{ iconexc }}"></i> Excluir</a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+  </tbody>
+</table>
+
+<!-- modal -->
+<div class="modal fade" tabindex="-1" role="dialog" id="formmodal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        <form class='form' id='formcliente'>
+          <input type="hidden" name="id" id="id">
+          <div class='row'>
+              <div class='col-md-12'>
+                 <div class='form-group'>
+                  <label for='descricao'>Descrição</label>
+                  <input type='text' class='form-control' name='descricao' id='descricao' />
+                </div>
+              </div>
+          </div>
+
+          <div class='row'>
+              <div class='col-md-6'>
+                <div class='form-group'>
+                  <label for='setor'>Setor</label>
+                  <select class='form-control' name='setor' id='setor' >
+                      <option value="R">RECEBIMENTO</option>
+                      <option value="T">TORRE</option>
+                  </select>
+                </div>
+              </div>
+
+          </div>
+         
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+        <button type="button" class="btn btn-primary btn-save">Salvar</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+{% endblock %}
+
+{% block js %}
+  {{ js('datatables') }}
+
+  <script>
+    $(document).ready(function(){
+       var table = $('#grid').DataTable({
+         responsive: true,
+          dom: 'Bfrtip',
+          buttons: [
+              'excel',
+              'pdf',
+              'print',
+          ],
+          language: {
+            url: '{{ assets('bower_components/datatables.net/js/Portuguese-Brasil.json') }}'
+          }
+        });
+
+        $('.btnnew').click(function(e){
+          e.preventDefault();
+          $('.modal-title').html('Adicionar Tipos');
+          $('.modal').modal('show');
+          $('#id').val('');
+          $('#descricao').val('');
+          $('#setor').val('');
+          return false;
+        })
+
+        $('body').on('click','.btnedit',function(e){
+          e.preventDefault();
+          $.ajax({
+            type: 'POST',
+            url: '{{ url('/dados-tp') }}',
+            data: 'id='+$(this).attr('post_id'),
+            dataType: 'JSON',
+            success: function(data){
+              $('#descricao').val(data.descricao);
+              $('#id').val(data.id);
+              $('#setor').val(data.setor);
+              $('.modal-title').html('Editar Tipos');
+              $('.modal').modal('show');
+            }
+          })
+         
+          return false;
+        })
+
+        $('.btn-save').click(function(e){
+          e.preventDefault();
+
+          $.ajax({
+            url: "{{ url('/salvar-dados-tp') }}",
+            data: $('#formcliente').serialize(),
+            type: 'POST',
+            dataType: 'JSON',
+            success: function(data){
+              if(data.retorno == 200){
+                alert('dados salvo com sucesso !!');
+              }
+              $('.modal').modal('hide');
+              window.location.reload();
+            },
+            error: function (data) {
+              console.log('Error:', data);
+              $('.btn-save').html('Salvar');
+            }
+          })
+        })
+    })
+
+  </script>
+{% endblock %}

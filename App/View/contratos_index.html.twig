@@ -1,0 +1,245 @@
+{% extends 'page.html.twig' %}
+
+{% block css %}
+  {{ css('datatables') }}
+    <style>
+        tr.group{
+            background-color: #006C38 !important;
+            color: white;
+        };
+        tr.group:hover {
+            text-decoration: underline;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="box-header">
+  <h3 class="box-title">Listar Contratos</h3>
+  <a href="#" class="{{ btnnew }} btnnew pull-right"><i class="{{ iconnew }}"></i> Novo</a>
+</div>
+
+<table class="{{ datatable_class }}" id="grid" data-page-length='{{ limit_data }}'>
+  <thead>
+    <tr>
+      <th>Contrato</th>
+      <th>Hibrido</th>
+      <th>Safra</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>  
+        {% for contrato in contratos %}
+            <tr >
+                <td>{{ contrato.numcontrato }}</td>
+                <td>{{ contrato.hibrido }}</td>
+                <td>{{ contrato.descricao }}</td>
+                <td>
+                    <div class="btn-group">
+                        <div class="btn-group">
+                            <a href="#" post_id="{{ contrato.id }}" class="{{ btnedit }} btnedit" title="Editar dados do contrato"><i class="{{ iconedit }}"></i> Editar</a>
+                            <a href="#" post_id="{{ contrato.id }}" class="{{ btnexc }} btndel" title="Excluir contrato"><i class="{{ iconexc }}"></i> Excluir</a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+  </tbody>
+</table>
+
+<!-- modal -->
+<form class='form' id='formcliente'>
+<div class="modal fade" tabindex="-1" role="dialog" id="formmodal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Modal title</h4>
+      </div>
+      <div class="modal-body">
+
+          <input type="hidden" name="id" id="id">
+          <input type="hidden" name="idcliente" id="idcliente" value="{{ codcliente }}">
+          <div class="row" style="background-color: #ddd; margin-bottom: 5px">
+              <div class="col-md-12">
+                  <h4><small>Cliente:</small> {{ nmcliente }}</h4>
+              </div>
+          </div>
+          <div class='row'>
+              <div class='col-md-6'>
+                  <div class='form-group'>
+                      <label for='contrato'>Contrato</label>
+                      <input type='text' class='form-control' name='numcontrato' id='numcontrato' required/>
+                  </div>
+              </div>
+
+              <div class='col-md-6'>
+                 <div class='form-group'>
+                  <label for='hibrido'>Hibrido</label>
+                  <input type='text' class='form-control' name='hibrido' id='hibrido' required/>
+                </div>
+              </div>
+          </div>
+
+          <div class='row'>
+              <div class='col-md-6'>
+                <div class='form-group'>
+                  <label for='idsafra'>Safra</label>
+                  <select class='form-control' name='idsafra' id='idsafra' required>
+                    {% for safra in safras %}
+                      <option value="{{ safra.id }}">{{ safra.descricao }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+           </div>
+         
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default btn-flat btn-sm" data-dismiss="modal"><i class="{{ iconclose }}"></i> Fechar</button>
+        <button type="submit" class="{{ btnsave }} btn-save"><i class="{{ iconsave }}"></i> Salvar</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+</form>
+{% endblock %}
+
+{% block js %}
+  {{ js('datatables') }}
+
+  <script>
+    $(document).ready(function(){
+
+       var groupColumn =1;
+       var table = $('#grid').DataTable({
+         responsive: true,
+          dom: 'Bfrtip',
+          buttons: [
+              'excel',
+              'pdf',
+              'print',
+          ],
+          language: {
+            url: '{{ assets('bower_components/datatables.net/js/Portuguese-Brasil.json') }}'
+          },
+           "columnDefs": [
+               { "visible": false, "targets": groupColumn }
+           ],
+           "order": [[ groupColumn, 'asc' ]],
+           "displayLength": 25,
+           "drawCallback": function ( settings ) {
+               var api = this.api();
+               var rows = api.rows( {page:'current'} ).nodes();
+               var last=null;
+
+               api.column(groupColumn, {page:'current'} ).data().each( function ( group, i ) {
+                   if ( last !== group ) {
+                       $(rows).eq( i ).before(
+                           '<tr class="group"><td colspan="10"><u>Híbrido</u> <strong>'+group+'</strong></td></tr>'
+                       );
+
+                       last = group;
+                   }
+               } );
+           }
+        });
+
+        $('#grid tbody').on( 'click', 'tr.group', function () {
+            var currentOrder = table.order()[0];
+            if ( currentOrder[0] === groupColumn && currentOrder[1] === 'asc' ) {
+                table.order( [ groupColumn, 'desc' ] ).draw();
+            }
+            else {
+                table.order( [ groupColumn, 'asc' ] ).draw();
+            }
+        } );
+
+        $('.btnnew').click(function(e){
+          e.preventDefault();
+          $('.modal-title').html('Adicionar Contrato');
+          $('.modal').modal('show');
+          $('#hibrido').val('');
+          $('#numcontrato').val('')
+          $('#idsafra').val('');
+          return false;
+        })
+
+        $('.btnedit').on('click',function(e){
+          e.preventDefault();
+
+          verificarlogin();
+
+
+          $.ajax({
+            type: 'POST',
+            url: '{{ url('/contrato/data') }}',
+            data: { id: $(this).attr('post_id')},
+            dataType: 'JSON',
+            success: function(data){
+              $('#hibrido').val(data.hibrido);
+              $('#numcontrato').val(data.numcontrato);
+              $('#idsafra').val(data.idsafra);
+              $('#id').val(data.id);
+              $('.modal-title').html('Editar Contrato');
+              $('.modal').modal('show');
+            }
+          })
+         
+          return false;
+        })
+
+        $('#formcliente').submit(function(event){
+          event.preventDefault();
+
+          verificarlogin();
+
+          $.ajax({
+            url: "{{ url('/contrato/store') }}",
+            data: $('#formcliente').serialize(),
+            type: 'POST',
+            dataType: 'JSON',
+            success: function(data){
+              if(data.retorno == 200){
+                alert('dados salvo com sucesso !!');
+              }
+              $('.modal').modal('hide');
+              location.reload(true);
+            },
+            error: function (data) {
+              console.log('Error:', data);
+              $('.btn-save').html('Salvar');
+            }
+          })
+        })
+
+        $('.btnend').on('click',function(e){
+            e.preventDefault();
+
+            verificarlogin();
+
+            
+            var msg = confirm('Se você realmente pensa em finalizar esse contrato clique em "OK"');
+            if(msg == true){
+                $.ajax({
+                    url: "{{ url('/contrato/delete') }}",
+                    data: { id: $(this).attr('post_id')},
+                    method: 'post',
+                    dataType: 'json',
+                    success: function(data){
+                        if(data.code == 1){
+                            alert('Esse contrato possui amostra vinculado');
+                        }else{
+                            location.reload(true);
+                        }
+                    }
+                })
+            }
+            return false;
+        })
+
+    })
+
+  </script>
+{% endblock %}

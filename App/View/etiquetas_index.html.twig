@@ -1,0 +1,273 @@
+{% extends 'page.html.twig' %}
+
+{% block css %}
+    {{ css('datatables') }}
+    {{ css('select2') }}
+     <style>
+        tr.group{
+            background-color: #006C38 !important;
+            color: white;
+            width: 100vh;
+        };
+        tr.group:hover {
+            text-decoration: underline;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="box-header">
+        <h3 class="box-title">Etiquetas</h3>
+        <a href="#" class="{{ btnnew }} btnnew pull-right"><i class="{{ iconnew }}"></i> Novo</a>
+    </div>
+    <table class="{{ datatable_class }}" id="grid" data-page-length='100'>
+        <thead>
+        <tr>
+            <th>Cliente</th>
+            <th>Contrato</th>
+            <th>Hibrido</th>
+            <th>Setor Responsável</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for e in etiquetas %}
+            <tr>
+                <td>{{ "%04d"|format(e.idcliente) }} :: {{ e.nmcliente }}</td>
+                <td>{{ e.numcontrato }}</td>
+                <td>{{ e.hibrido }}</td>
+                <td>{{ e.setor == 'R' ? 'RECEBIMENTO' : 'TORRE' }}</td>
+                <td>
+                    <a href="{{ url('/etiqueta/list/cliente') }}/{{ e.idcliente }}/{{ e.idcontrato }}" class="btn btn-sm btn-flat btn-primary btnprint"><i class="{{ iconprint }}"></i> Visualizar</a>
+                    <a href="{{ url('/etiqueta/print/all') }}/cliente/{{ e.idcliente }}/contrato/{{ e.idcontrato }}"  target="_blank" class=" {{ btnprint }} btnview"><i class="{{ iconprint }}"></i> Imprimir todas</a>
+            </tr>
+
+                </td>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- modal -->
+    <form class='form' id='form' method="post" action="{{ url('/etiquetas')}}">
+    <div class="modal fade" tabindex="-1" role="dialog" id="formmodal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Modal title</h4>
+                </div>
+                <div class="modal-body">
+
+                        <div class='row'>
+                            <div class='col-md-12'>
+                                <div class='form-group'>
+                                    <label for='idcliente'>Cliente</label>
+                                    <select class='form-control' name='idcliente' id='idcliente' required >
+                                            <option value="" readyonly style="text-transform: uppercase">SELECIONE UM CLIENTE</option>
+                                        {% for cliente in clientes %}
+                                            <option value="{{ cliente.id }}">{{ "%04d"|format(cliente.id) }} &raquo {{ cliente.nmcliente }} </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class='row'>
+                            <div class='col-md-9'>
+                                <div class='form-group'>
+                                    <label for='idcontrato'>Contrato / Hibrido </label>
+                                    <select class='form-control' name='idcontrato' id='idcontrato' required >
+
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class='col-md-3'>
+                                <div class='form-group'>
+                                    <label for='numetiquetas'>Qde p/ Gerar</label>
+                                    <input class='form-control' type='number' name='numetiquetas' id='numetiquetas' value="1" minlength="1" required />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class='row'>
+                             <div class='col-md-2'>
+                                <div class='form-group'>
+                                    <label for='operador'>Operador</label>
+                                    <input class='form-control' name='idoperador' id='idoperador' required >
+                                    <span class="nameOperador"></span>
+                                </div>
+                            </div>
+
+                            <div class='col-md-4'>
+                                <div class='form-group'>
+                                    <label for='operador'>Nome</label>
+                                    <input class='form-control' disabled name='operador' id='operador' required >
+                                    <span class="nameOperador"></span>
+                                </div>
+                            </div>
+
+                            <div class='col-md-6'>
+                                <div class='form-group'>
+                                    <label for='setor'>Setor Responsável</label>
+                                    <select class='form-control' name='setor' id='setor' required >
+                                        <option value="R">Recebimento</option>
+                                        <option value="T">Torre</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                    <button type="submit" class="btn btn-primary btn-save">Salvar</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    </form>
+{% endblock %}
+
+{% block js %}
+    {{ js('datatables') }}
+    {{ js('select2') }}
+
+    <script>
+       $(document).ready(function(){
+
+           $('#idcliente').select2({
+               width: '100%',
+               placeholder: 'Selecione o cliente',
+               minimumInputLength: 3,
+           });
+
+           var groupColumn = 1;
+           var table = $('#grid').DataTable({
+               responsive: true,
+                dom: 'Bfrtip',
+                buttons: [
+                    'excel',
+                    'pdf',
+                    'print',
+                ],
+               language: {
+                   url: '{{ assets('bower_components/datatables.net/js/Portuguese-Brasil.json') }}'
+               },
+                "columnDefs": [
+                    { "visible": false, "targets": groupColumn }
+                ],
+                "order": [[ groupColumn, 'asc' ]],
+                "drawCallback": function ( settings ) {
+                    var api = this.api();
+                    var rows = api.rows( {page:'current'} ).nodes();
+                    var last=null;
+
+                    api.column(groupColumn, {page:'current'} ).data().each( function ( group, i ) {
+                        if ( last !== group ) {
+                            $(rows).eq( i ).before(
+                                '<tr class="group"><td colspan="5"><u>Contrato:</u> <strong>'+group+'</strong></td></tr>'
+                            );
+
+                            last = group;
+                        }
+                    } );
+                }
+            });
+          
+        
+            $('#grid tbody').on( 'click', 'tr.group', function () {
+                var currentOrder = table.order()[0];
+                if ( currentOrder[0] === groupColumn && currentOrder[1] === 'asc' ) {
+                    table.order( [ groupColumn, 'desc' ] ).draw();
+                }
+                else {
+                    table.order( [ groupColumn, 'asc' ] ).draw();
+                }
+            } );
+
+           $('.btnnew').click(function(e){
+               e.preventDefault();
+               $('.modal-title').html('Gerar etiquetas');
+               $('#formmodal').modal('show');
+               $('#idcontrato').html('');
+               $('#idcontrato').val('');
+               $('#idcliente').val('');
+               $('#setor').val('');
+               $('#idoperador').val('');
+               $('#operador').val('');
+               $('#numetiquetas').val('1');
+               $('#formmodal').on('shown.bs.modal', () => {
+                  $('#idcliente').focus();
+               });
+               return false;
+           })
+
+           $('#idcliente').change(function(){
+
+               verificarlogin();
+
+               $.ajax({
+                   url: "{{ url('/etiqueta/search/contrato') }}",
+                   method: 'POST',
+                   data: { id: $(this).val()},
+                   dataType: 'HTML',
+                   success: (data) => {
+                       $('#idcontrato').html(data);
+                   }
+               })
+           })
+
+
+
+            $('#idoperador').bind('keyup keypress focus paste',function(e){
+                const cod = $(this).val();
+                
+                if(cod.length < 3 ){
+                    return;
+                }
+
+                verificarlogin();
+
+                $.get(`{{ url_base }}/operador/${cod}`, {cod}, (data) => {
+                     $('#operador').val(data.name);
+                });
+            })
+
+           $('#form').submit(function(e){
+               e.preventDefault();
+
+                verificarlogin();
+
+                /*
+                if($('#idcontrato').val() === ''){
+                    return;
+                }
+
+                if($('#idoperador').val() === ''){
+                    return;
+                }
+                */
+               
+               $.ajax({
+                   url: '{{ url_base }}/gerar-etiquetas',
+                   data: $('#form').serialize(),
+                   method: 'post',
+                   dataType: 'json',
+                   success: function(data){
+                        //console.log('enviado');
+                        cliente = data.idcliente;
+                        contrato = data.idcontrato;
+                        let uri = '{{ url('/etiqueta/print/all/cliente/') }}';
+                        uri = uri+`${cliente}/contrato/${contrato}`;
+                        window.open(uri,'_blank');
+                        location.reload(true);
+                   }
+               })
+               return false;
+           })
+    })
+    </script>
+
+{% endblock %}

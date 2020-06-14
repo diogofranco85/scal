@@ -1,0 +1,21 @@
+{
+    "name": "valorem/scal",
+    "description" : "Valorem Framework",
+    "require" : {
+        "php" : ">=7.0.0",
+        "twig/twig": "^2.4",
+        "setasign/fpdf":"1.8.1",
+        "phpmailer/phpmailer": "^6.0",
+        "symfony/http-foundation": "^4.3",
+        "filp/whoops": "^2.5",
+        "mpdf/mpdf": "^8.0",
+        "sentry/sdk": "2.1.0",
+        "vlucas/phpdotenv": "^4.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\" : "App/",
+            "Core\\" : "Core/"
+        }
+    }
+}

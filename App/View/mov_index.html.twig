@@ -1,0 +1,165 @@
+{% extends 'page.html.twig' %}
+
+{% block css %}
+  {{ css('datatables') }}
+{% endblock %}
+
+{% block content %}
+<div class="box-header">
+  <h3 class="box-title">Movimentacao de amostras</h3>
+</div>
+<div class="box-body">
+  <div class="row">
+    <div class="col-md-12 bg-green">
+        <h3>Armazenamento Atual</h3>
+    </div>
+</div>
+<form class="form" id="formmov" method="post">
+{% for m in rs_estoque %}
+
+  <input type="hidden" value="{{ m.idarmazenamento }}" name="estoqueatual" />
+  <input type="hidden" value="{{ m.id }}" name="idatual" />
+  <input type="hidden" value="{{ m.idetiqueta }}" name="idetiqueta" />
+  <input type="hidden" value="{{ m.id_status_end }}" name="status_end" />
+
+  <div class="row">
+      <div class="col-md-6">
+          <div class='form-group'>
+              <label for='cliente'>Cliente</label>
+              <input type="text" value="{{m.nmcliente}}"  readonly class='form-control' name='cliente' id='cliente'>
+          </div>
+      </div>
+
+      <div class="col-md-3">
+          <div class='form-group'>
+              <label for='contrato'>Contrato</label>
+              <input type="text" value="{{m.numcontrato}}"  readonly class='form-control' name='contrato' id='contrato'>
+          </div>
+      </div>
+
+      <div class="col-md-3">
+          <div class='form-group'>
+              <label for='hibrido'>Hibrido</label>
+              <input type="text" value="{{m.hibrido}}"  readonly class='form-control' name='hibrido' id='hibrido'>
+          </div>
+      </div>
+  </div>
+  <div class="row">
+        <div class="col-md-3">
+          <div class='form-group'>
+              <label for='localatual'>Local Armazenado</label>
+              <input type="text" value="{{m.armazenamento}}"  readonly class='form-control' name='localatual' id='localatual'>
+          </div>
+      </div>
+
+
+      <div class="col-md-3">
+          <div class='form-group'>
+              <label for='pesoatual'>Peso</label>
+              <input type="text" value="{{m.calcpeso|number_format(2,'.',',')}}"  readonly class='form-control' name='pesoatual' id='pesoatual'>
+          </div>
+      </div>
+
+  </div>
+{% endfor %}
+
+<div class="row">
+    <div class="col-md-12 bg-green">
+        <h3>Movimentar para:</h3>
+    </div>
+</div>
+
+
+<div class="row">
+      <div class="col-md-2">
+          <div class='form-group'>
+              <label for='cliente'>Local</label>
+              <input type="text" class='form-control' name='local' id='local' required="required">
+          </div>
+      </div>
+
+      <div class="col-md-2">
+          <div class='form-group'>
+              <label for='cliente'>Peso</label>
+              <input type="number" class='form-control' name='peso' id='peso' required="required">
+          </div>
+      </div>
+
+        <div class="col-md-2">
+            <div class='form-group'>
+            <label for='status'>Movito da mudança de peso</label>
+            <select class='form-control' name='status_mov' id='status' required="required">
+                {% for s in rs_status %} 
+                <option value="{{ s.id }}" {% if s.id  == 1 %} selected="selected" {% endif %}>{{ s.descricao }}</option>
+                {% endfor %}
+            </select>
+            </div>
+        </div>
+
+        <div class='col-md-1'>
+            <div class='form-group'>
+                <label for='operador'>Cód.Resp.</label>
+                <input class='form-control' name='idoperador' id='idoperador' required >
+                <span class="nameOperador"></span>
+            </div>
+        </div>
+
+        <div class='col-md-2'>
+            <div class='form-group'>
+                <label for='operador'>Responsável</label>
+                <input class='form-control' disabled name='operador' id='operador' required >
+                <span class="nameOperador"></span>
+            </div>
+        </div>
+
+
+        <div class="col-md-2">
+            <div class='form-group'>
+                <label for='btnsave'>Clique abaixo para mover</label>
+                <button type="submit" id="btnsave" name="btnsave" class="form-control btn-success">Mover</button>
+            </div>
+        </div>
+      
+</div>
+  </form>
+     
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+ {{ js('jquerymask') }}
+ <script>
+  $(document).ready(function(){
+
+     $('#peso').mask('#0.000',{ reverse: true });
+
+    const peso = $('#pesoatual').val();
+    $('#peso').attr('max',peso);
+    $('#peso').val(peso);
+
+    $("#formmov").submit(function(event){
+        event.preventDefault();
+
+        verificarlogin();
+
+        const url = '{{ url("/movimentar/estoque")}}';
+        const data = $('#formmov').serialize(); 
+        $.ajax({
+            url,
+            data,
+            type: 'post',
+            dataType: 'JSON',
+            success: (data) => {
+                alert(data.message);
+                if(data.status == 200){
+                    location.href = '{{ url("/enderecamento")}}';
+                }
+            }
+        })
+    });
+
+  });
+  </script>
+{% endblock %}

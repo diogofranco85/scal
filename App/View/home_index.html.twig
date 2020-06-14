@@ -1,0 +1,73 @@
+{% extends 'page.html.twig' %}
+
+{% block css %}
+   
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-3 col-sm-6 col-xs-12">
+      <div class="info-box">
+        <span class="info-box-icon bg-aqua"><i class="ion ion-ios-contact-outline"></i></span>
+        <div class="info-box-content">
+          <span class="info-box-text">Clientes</span>
+          <span class="info-box-number">{{ clientes }}</span>
+        </div>
+        <!-- /.info-box-content -->
+      </div>
+          <!-- /.info-box -->
+    </div>
+
+
+     <div class="col-md-3 col-sm-6 col-xs-12">
+      <div class="info-box">
+        <span class="info-box-icon bg-purple"><i class="ion ion-ios-albums-outline"></i></span>
+        <div class="info-box-content">
+          <span class="info-box-text">Contratos</span>
+          <span class="info-box-number">{{ contratos }}</span>
+        </div>
+        <!-- /.info-box-content -->
+      </div>
+          <!-- /.info-box -->
+    </div>
+
+
+     <div class="col-md-3 col-sm-6 col-xs-12">
+      <div class="info-box">
+        <span class="info-box-icon bg-green"><i class="ion ion-ios-chatboxes-outline"></i></span>
+        <div class="info-box-content">
+          <span class="info-box-text">Etiquetas</span>
+          <span class="info-box-number">{{ etiquetas }}</span>
+        </div>
+        <!-- /.info-box-content -->
+      </div>
+          <!-- /.info-box -->
+    </div>
+
+
+     <div class="col-md-3 col-sm-6 col-xs-12">
+      <div class="info-box">
+        <span class="info-box-icon bg-red"><i class="ion ion-ios-nutrition-outline"></i></span>
+        <div class="info-box-content">
+          <span class="info-box-text">Amostras</span>
+          <span class="info-box-number">{{ amostras }}</span>
+        </div>
+        <!-- /.info-box-content -->
+      </div>
+          <!-- /.info-box -->
+    </div>
+
+   </div>
+
+  <div class='col-md-12'>
+    <div class="box">
+        <div class="box-header with-border">
+          <h3 class="box-title">Quantidade de amostras x safra<h3>
+        </div>
+        <div class="box-body">
+            <p>Content<p>
+        </div>
+    </div>
+  </div>
+
+{% endblock %}

@@ -1,0 +1,316 @@
+{% extends 'page.html.twig' %}
+
+{% block css %}
+  {{ css('datatables') }}
+{% endblock %}
+
+{% block content %}
+<div class="box-header">
+  <h3 class="box-title">informações sobre os testes realizados nas amostras</h3>
+  <a class=" {{ btnnew }} btnnew pull-right" href="#"><i class="{{ iconnew }}"></i> Novo</a> 
+</div>
+<table class="table table-bordered table-striped dataTable" id="grid" data-page-length='{{ limit_data }}'>
+  <thead>
+    <tr>
+      <th>etiqueta</th>
+      <th>Cliente</th>
+      <th>Tipo Amostra</th>
+      <th>Contrato</th>
+      <th>Hibrido</th>
+      <th>Setor</th>
+      <th>Data de Inicio</th>
+      <th>Responsável Inicio Teste</th>
+      <th>Data Término</th>
+       <th>Responsável Término Teste</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>  
+        {% for grid in testes %}
+            <tr>
+                <td> {{ '%04d'|format(grid.numetiqueta) }}</td>
+                <td>{{ grid.nmcliente }}</td>
+                <td>{{ grid.tipo }}</td>
+                <td>{{ grid.numcontrato }}</td>
+                <td>{{ grid.hibrido }}</td>
+                <td>{{ grid.setor == 'R' ? 'RECEBIMENTO' : 'TORRE' }}</td>
+                <td>{{ grid.dtinicio|date('d/m/Y H:i:s') }}</td>
+                <td> {{ grid.inicioname}}</td>
+                <td>{{ grid.dttermino == '1001-01-01 01:01:01' ? " - " : grid.dttermino|date('d/m/Y H:i:s') }}</td>
+                <td>{{ grid.terminoname}}</td>
+                <td>
+                    <div class="btn-group">
+
+                        {% if grid.dtinicio != '' and grid.dttermino == '1001-01-01 01:01:01' %}
+                        <a href="#" post_id="{{ grid.id }}" class="btn btn-flat  bg-red-active btn-sm btnnew">
+                            <i class="fa fa-angle-double-down"></i> Registrar Fim
+                        </a>
+                        {% endif %}
+                        
+                        {% if grid.dtinicio != '' and grid.dttermino != '1001-01-01 01:01:01' %}
+                        <a href="#" post_id="{{ grid.id }}" class="btn btn-flat  bg-purple-active btn-sm btnview">
+                            <i class="fa fa-eye"></i> Visualizar
+                        </a>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+  </tbody>
+</table>
+
+<!-- modal -->
+<form action="#" method="post" class="form" id="frminicio">
+<div class="modal fade" tabindex="-1" role="dialog" id="formmodal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Modal title</h4>
+      </div>
+      <div class="modal-body">
+          <div class="modal-body">
+              <div class='row'>
+                  <div class='col-md-12'>
+                      <div class='form-group'>
+                          <label for='numetiqueta'>Código de barras</label>
+                          <input type="text" style="text-align: center" class='form-control input-lg' name='numetiqueta' id='numetiqueta'>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="row">
+                  <div class="col-md-12">
+                      <div class="form-group">
+                          <label for="nmcliente">Cliente</label>
+                          <input type="text" value="" id="nmcliente" name="nmcliente" readonly="readonly" class="form-control">
+                      </div>
+                  </div>
+              </div>
+
+              <div class="row">
+                  <div class="col-md-4">
+                      <div class="form-group">
+                          <label for="nmcliente">Contrato</label>
+                          <input type="text" value="" id="numcontrato" name="numcontrato" readonly="readonly" class="form-control">
+                          <input type="hidden" name="idamostra" id="idamostra" />
+                      </div>
+                  </div>
+                  <div class="col-md-4">
+                      <div class="form-group">
+                          <label for="nmcliente">Híbrido</label>
+                          <input type="text" value="" id="hibrido" name="hibrido" readonly="readonly" class="form-control">
+                      </div>
+                  </div>
+
+                  <div class="col-md-4">
+                      <div class="form-group">
+                          <label for="nmcliente">Setor</label>
+                          <input type="hidden" id="setor" name="setor"/>
+                          <input type="text" value="" id="nmsetor" name="nmsetor" readonly="readonly" class="form-control">
+                      </div>
+                  </div>
+              </div>
+
+              <div class='row'>
+                  <div class='col-md-4'>
+                      <div class='form-group'>
+                          <label for='numetiqueta'>Cód.Resp.</label>
+                          <input type="text" required class='form-control' name='idoperador' id='idoperador'>
+                      </div>
+                  </div>
+
+                  <div class='col-md-8'>
+                      <div class='form-group'>
+                          <label for='operador'>Responsável</label>
+                          <input type="text"  disabled class='form-control' name='operador' id='operador'>
+                      </div>
+                  </div>
+              </div>
+
+              <div class='row'>
+                  <div class='col-md-6'>
+                      <div class='form-group'>
+                          <label for='hrinicio'>Data</label>
+                          <input type="text" disabled class='form-control' name='dtinicio' id='dtinicio'>
+                      </div>
+                  </div>
+
+                  <div class='col-md-6'>
+                      <div class='form-group'>
+                          <label for='dtinicio'>Hora</label>
+                          <input type="text"  disabled class='form-control' name='hrinicio' id='hrinicio'>
+                      </div>
+                  </div>
+              </div>
+
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="{{ iconclose }}"></i> Fechar</button>
+        <button type="submit" class="{{ btnsave }} btn-saveinicio"><i class="{{ iconsave }}"></i> Salvar</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+</form>
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="frmview">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Visualizar Informações do teste</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="loadfields_view">
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btnclose"  data-dismiss="modal">Fechar</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+
+{% endblock %}
+
+{% block js %}
+  {{ js('datatables') }}
+  {{ js('validate') }}
+
+  <script>
+    $(document).ready(function(){
+       var table = $('#grid').DataTable({
+         responsive: true,
+          "columnDefs": [
+            {
+                "targets": [ 0 ],
+                "visible": false,
+            },
+          ],
+          dom: 'Bfrtip',
+          buttons: [
+              'excel',
+              'pdf',
+              'print',
+          ],
+          language: {
+            url: '{{ assets('bower_components/datatables.net/js/Portuguese-Brasil.json') }}'
+          }
+        });
+
+       $('#frm').validate();
+
+       $(".btnnew").click(function(){
+           $('.modal-title').html('Registrar início do teste');
+           $('#loadfield').html("");
+           $('#formmodal').modal();
+           $('#numetiqueta').val('');
+           $('#formmodal').on('shown.bs.modal',function(event){
+               $('#numetiqueta').focus();
+           })
+            /*
+            $('#formmodal').on('hidden.bs.modal',function(event){
+               location.reload(true);
+           })
+           */
+       })
+
+        $('#numetiqueta').bind('keypress keyup paste',function(){
+            let etiqueta = $('#numetiqueta').val();
+
+            if( etiqueta.length < 4){
+                return;
+            }
+
+            fncloadfields();
+
+            $('#idoperador').focus();
+        })
+
+        $('a.btnview').click(function(event){
+
+            const idteste = $(this).attr('post_id');
+            $.ajax({
+              url: '{{ url("/teste_amostra/loadview") }}' ,
+              data: { idteste },
+              datatype: 'json',
+              method: 'post',
+              success: function(data){
+                $('.loadfields_view').html(data);
+                $('#frmview').modal();
+              }
+            })
+        })
+
+        function fncloadfields(){
+
+            let idetiqueta = $('#numetiqueta').val();
+            
+            verificarlogin();
+
+           $.ajax({
+               url: "{{ url('/teste/loadfields') }}",
+               method: 'post',
+               data: { idetiqueta },
+               dataType: 'json',
+               success:function(response){
+                    $('#nmcliente').val(response.data.nmcliente);
+                    $('#numcontrato').val(response.data.numcontrato);
+                    $('#hibrido').val(response.data.hibrido);
+                    $('#setor').val(response.data.setor);
+                    $('#nmsetor').val(response.data.nmcliente == 'R' ? 'RECEBIMENTO' : 'TORRE');
+                    $('#hrinicio').val(response.data.hrinicio);
+                    $('#dtinicio').val(response.data.dtinicio);
+                    $('#idamostra').val(response.data.idamostra);
+               }
+           })
+        }
+
+        $('#idoperador').bind('keyup keypress focus paste',function(e){
+                const cod = $(this).val();
+                
+                if(cod.length < 3 ){
+                    return;
+                }
+
+                verificarlogin();
+
+                $.get(`{{ url_base }}/operador/${cod}`, {cod}, (data) => {
+                    $('#operador').val(data.name);
+                });
+            })
+
+        $('#frminicio').submit(function(e){
+          e.preventDefault();
+
+          verificarlogin();
+
+          $.ajax({
+            url: "{{ url_base }}/teste/store",
+            method: "post",
+            data: $(this).serialize(),
+            dataType: 'json',
+            success: (response) => {
+                if(response.code == 200){
+                    alert(response.message);
+                    window.location.reload();
+                }else{
+                    alert(response.message);
+                }
+                
+              },
+          })
+
+          return false;
+        })
+
+    })
+
+  </script>
+{% endblock %}

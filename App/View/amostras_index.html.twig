@@ -1,0 +1,250 @@
+{% extends 'page.html.twig' %}
+
+{% block css %}
+  {{ css('datatables') }}
+  {{ css('select2') }}
+  {{ css('toastr') }}
+{% endblock %}
+
+{% block content %}
+<div class="box-header">
+  <h3 class="box-title">Listando amostras ativas</h3>
+  <a href="#" class="{{ btnnew }} btnnew pull-right"><i class="{{ iconnew }}"></i> Novo</a>
+</div>
+<table class="{{ datatable_class }}" id="grid" data-page-length='{{ limit_data }}'>
+  <thead>
+    <tr>
+      <th>Código</th>
+      <th>Cliente</th>
+      <th>Etiqueta</th>
+      <th>Contrato</th>
+      <th>Hibrido</th>
+      <th>Setor</th>
+      <th>Safra</th>
+      <th>Peso</th>
+      <th>Protocolo</th>
+      <th>Responsável</th>
+      <th>Data</th>
+      <th>Registro criado em</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+        {% for grid in grids %}
+        <tr>
+            <td>{{ "%04d"|format(grid.id) }}</td>
+            <td>{{ grid.nmcliente }}</td>
+            <td> {{ "%04d"|format(grid.idetiqueta) }}
+            <td>{{ grid.numcontrato }}</td>
+            <td>{{ grid.hibrido }}</td>
+            <td>{{ grid.setor == 'R' ? 'RECEBIMENTO' : 'TORRE' }}</td>
+            <td>{{ grid.safra }}</td>
+            <td>{{ grid.peso|number_format(3,'.',',') }}</td>
+            <td>{{ grid.protocolo }}</td>
+             <td>{{ grid.name }}</td>
+            <td>{{ grid.dtamostra| date('d/m/Y') }}</td>
+            <td>{{ grid.amostra_created_at|date('d/m/y h:i')}}</td>
+            <td>
+                <div class="btn-group">
+                    <a href="#" post_id="{{ grid.id }}" class="{{ btnedit }} btnedit"><i class="{{ iconedit }}"></i> Editar</a>
+                    <a href="#" post_id="{{ grid.id }}" class="{{ btnexc }} btndel"><i class="{{ iconexc }}"></i> Excluir</a>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+  </tbody>
+</table>
+
+<!-- modal -->
+<form class='form' id='frm' action="#" method="post" style="margin-top: 5px">
+<div class="modal fade" tabindex="-1" role="dialog" id="formmodal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Modal title</h4>
+      </div>
+      <div class="modal-body">
+          <div id="loadcode">
+              <div class='row'>
+                  <div class='col-md-12'>
+                      <div class='form-group'>
+                          <label for='numetiqueta'>Código de barras</label>
+                          <input type="number" style="text-align: center" class='form-control input-lg' name='numetiqueta' id='numetiqueta'>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+
+        <!--
+        -- INICIO LOADFIELDS
+        -- CARREGAR FORMULARIO DE AMOSTRA E DADOS DO CLIENTE E CONTRATO
+        -->
+        <div id="loadfield"></div>
+        <!-- FIM DO LOADFIELDS -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default btn-flat" data-dismiss="modal"><i class="fa fa-close"></i> Fechar</button>
+        <button type="submit" class="btn btn-primary btn-flat btn-save"><i class="fa fa-save"></i> Salvar</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+</form>
+
+{% endblock %}
+
+{% block js %}
+  {{ js('datatables') }}
+  {{ js('validate') }}
+  {{ js('toastr') }}
+
+
+
+  <script>
+    $(document).ready(function(){
+       var table = $('#grid').DataTable({
+         responsive: true,
+          dom: 'Bfrtip',
+          buttons: [
+              'excel',
+              'pdf',
+              'print',
+          ],
+          language: {
+            url: '{{ assets('bower_components/datatables.net/js/Portuguese-Brasil.json') }}'
+          }
+        });
+
+        $('#frm').validate();
+
+        var fieldsLoad = false;
+
+        $('.btnnew').click(function(e){
+          e.preventDefault();
+          $('.modal-title').html('Adicionar Amostra');
+          $('.modal').modal('show');
+          $('#numetiqueta').val('');
+          $('#loadfield').html('');
+          $('#loadcode').show('slow');
+          $('.modal').on('shown.bs.modal',function(event){
+
+              $('#numetiqueta').focus();
+          })
+        })
+
+
+        $('a.btnedit').click(function(e){
+            e.preventDefault();
+            
+            verificarlogin();
+
+            console.log($(this));
+
+            let idamostra = $(this).attr('post_id');
+            $.ajax({
+                method: 'post',
+                url: '{{ url("/amostra/edit") }}',
+                data: { idamostra },
+                dataType: 'html',
+                success: function(data){
+                    fieldsLoad = true;
+
+                    $('#loadcode').hide();
+                    $('.modal-title').html('Editar Amostra');
+                    $('.modal').modal('show');
+                    $('#loadfield').html(data);
+
+                },
+                error: (err) => {
+                    console.log(err);
+                },
+            });
+        })
+
+
+        $('#frm').submit(function(e){
+            e.preventDefault();
+            
+            if($('#idoperador').val() === ''){
+              return;
+            }
+
+            if(fieldsLoad){
+                fncSaveData();
+            }
+
+            return false;
+        })
+
+      $('#numetiqueta').bind('keyup keypress focus paste',function(e){
+          if($(this).val().length > 3){
+              fncLoadField();
+          }
+      })
+
+
+       $('.btndel').click(function(event){
+           verificarlogin();
+
+           let idamostra = $(this).attr('post_id');
+           $.ajax({
+               url: '{{ url("/amostra/delete") }}',
+               data: { idamostra },
+               dataType: 'json',
+               method: 'post',
+               success: function(data){
+                   alert(data.message);
+                   if(data.code == 200){
+                       location.reload(true);
+                   }
+               }
+           })
+       })
+
+     
+
+       function fncLoadField(){
+            verificarlogin();
+
+            if($('#numetiqueta').val() == ''){
+                alert('Campo código de barra em branco');
+            }else{
+                fieldsLoad = true;
+                $('#loadfield').html("<center><i class='fa fa-spinner'></i> Carregando...</center>");
+                $.ajax({
+                    url: '{{ url("/amostra/read/codebar") }}',
+                    data: { idetiqueta: $("#numetiqueta").val() },
+                    datatype: 'html',
+                    method:'post',
+                    success: function(data){
+                        $('#loadfield').html(data);
+                        $('#loadcode').show();
+                    }
+                })
+            }
+        }
+
+        function fncSaveData(){
+
+            verificarlogin();
+
+            $.ajax({
+                method:'post',
+                url: '{{ url('/amostra/store') }}',
+                data: $('#frm').serialize(),
+                dataType: 'json',
+                success: function(data){
+                    if(data.retorno == 200){
+                        alert('Dados foram salvos com sucesso');
+                        location.reload();
+                    }
+                }
+            })
+        }
+
+    })
+
+  </script>
+{% endblock %}

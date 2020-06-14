@@ -1,0 +1,118 @@
+{% extends 'page.html.twig' %}
+
+{% block css %}
+  {{ css('datatables') }}
+{% endblock %}
+
+{% block content %}
+<div class="box-header">
+  <h3 class="box-title">Definar os acesso dos usuários </h3>
+</div>
+<table class="table table-bordered table-striped dataTable" id="grid" data-page-length='100'>
+  <thead>
+    <tr>
+      <th>Usuário</th>
+      <th>Nome</th>
+      <th>E-mail</th>
+      <th>Perfil de acesso</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>  
+        {% for grid in grids %}
+            <tr>
+                <td>{{ grid.usuario }}</td>
+                <td>{{ grid.nome }}</td>
+                <td>{{ grid.email }}</td>
+                <td>{{ grid.tipo == 2 ? 'Administrador' : 'Usuário'  }}</td>
+                <td>
+                    <div class="btn-group">
+                        <a href="#" post_id="{{ grid.id }}" class="btn btn-flat bg-green-active btn-sm btnview">
+                            <i class="fa fa-eye"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+  </tbody>
+</table>
+
+<!-- modal -->
+<form action="#" method="post" class="form" id="frm">
+<div class="modal fade" tabindex="-1" role="dialog" id="formmodal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Modal title</h4>
+      </div>
+      <div class="modal-body">
+          <div class="modal-body">
+              <div class='row'>
+                  <div class='col-md-12'>
+                      <div class='form-group'>
+                          <label for='numetiqueta'>Código de barras</label>
+                          <input type="text" style="text-align: center" class='form-control input-lg' name='numetiqueta' id='numetiqueta'>
+                      </div>
+                  </div>
+              </div>
+
+              <!--
+              -- INICIO LOADFIELDS
+              -- CARREGAR FORMULARIO DE AMOSTRA E DADOS DO CLIENTE E CONTRATO
+              -->
+
+              <div id="loadfield"></div>
+              <!-- FIM DO LOADFIELDS -->
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+</form>
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="frmview">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Visualizar Informações do teste</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="loadfields_view">
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btnclose"  data-dismiss="modal">Fechar</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+
+{% endblock %}
+
+{% block js %}
+  {{ js('datatables') }}
+  {{ js('validate') }}
+
+  <script>
+    $(document).ready(function(){
+       
+       var table = $('#grid').DataTable({
+         responsive: true,
+          language: {
+            url: '{{ assets('bower_components/datatables.net/js/Portuguese-Brasil.json') }}'
+          }
+        });
+        
+    })
+
+  </script>
+{% endblock %}

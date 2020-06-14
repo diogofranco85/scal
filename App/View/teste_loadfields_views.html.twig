@@ -1,0 +1,85 @@
+{% for info in amostra %}
+<div class='row'>
+    <div class='col-md-12'>
+        <div class='form-group'>
+            <label for='numetiqueta'>Código de barras</label>
+            <input type="text" style="text-align: center" class='form-control input-lg' name='numetiqueta' id='numetiqueta' readonly value="{{ "%04d"|format(info.numetiqueta) }}">
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class='col-md-12'>
+        <div class='form-group'>
+            <label for='cliente'>Cliente</label>
+            <input type="text" class='form-control' name='cliente' id='cliente' readonly value="{{ info.nmcliente }}">
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class='col-md-4'>
+        <div class='form-group'>
+            <label for='cliente'>Contrato</label>
+            <input type="text" class='form-control' name='cliente' id='cliente' readonly value="{{ info.numcontrato }}">
+        </div>
+    </div>
+
+    <div class='col-md-4'>
+        <div class='form-group'>
+            <label for='cliente'>Hibrido</label>
+            <input type="text" class='form-control' name='cliente' id='cliente' readonly value="{{ info.hibrido }}">
+        </div>
+    </div>
+
+    <div class='col-md-4'>
+        <div class='form-group'>
+            <label for='cliente'>Setor</label>
+            <input type="text" class='form-control' name='cliente' id='cliente' readonly value="{{ info.setor == 'R' ? 'Recebimento' : 'Torre' }}">
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-5 text-center">
+        <div class="bg-blue-active">
+            <h3 style="padding: 5px">Início Teste</h3>
+        </div>
+        <div class='form-group'>
+            <input type="text" style="text-align: center"  readonly class='form-control' name='dtinicio' id='dtinicio' value="{{ info.dtinicio|date('d/m/Y H:i:s') }}">
+        </div>
+    </div>
+
+    <div class="col-md-offset-2 col-md-5 text-center">
+        <div class="bg-green-active ">
+            <h3 style="padding: 5px">Término Teste</h3>
+        </div>
+        <h3 id="dtendtest"></h3>
+        <div class='form-group'>
+            <input type="text" style="text-align: center"  readonly class='form-control' name='dtinicio' id='dtinicio' value="{{ info.dttermino == '1001-01-01 01:01:01' ? " - " : info.dttermino|date('d/m/Y H:i:s') }}">
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-5 text-center">
+        <div class='form-group'>
+            <label for='cliente'>Operador</label>
+            <input type="text" style="text-align: center"  readonly class='form-control' name='dtinicio' id='dtinicio' value="{{ info.nameinicio }}">
+        </div>
+    </div>
+
+    <div class="col-md-offset-2 col-md-5 text-center">
+        <div class='form-group'>
+            <label for='cliente'>Operador</label>
+            <input type="text" style="text-align: center"  readonly class='form-control' name='dtinicio' id='dtinicio' value="{{ info.namefim }}">
+        </div>
+    </div>
+</div>
+
+    <input type="hidden" name="idcliente" value="{{ info.idcliente }}"/>
+    <input type="hidden" name="idcontrato" value="{{ info.idcontrato }}"/>
+    <input type="hidden" name="idamostra" value="{{ info.idamostra }}"/>
+
+<hr>
+{%  endfor %}

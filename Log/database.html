@@ -1,0 +1,168 @@
+<p> 
+<b>20/05/2020 11:36:21</b> <br> 
+<i>Model:App\Model\EstoqueModel <br> Erro ao gravar dados: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ' , '1', , 'ENDERECAMENTO', '2020-05-20 11:05:21', '2020-05-20 11:05:21')' at line 1<br> <b>SQL:</b><span style='color: red'>INSERT INTO lab_estoque ( idetiqueta, armazenamento, peso_armazem, peso_cliente, peso_descarte, idoperador, id_status_end, tipo, created_at, updated_at) VALUES ( '0001', 'A01S02D', '10.001', , , '1', , 'ENDERECAMENTO', '2020-05-20 11:05:21', '2020-05-20 11:05:21')</span></i> <br> 
+</p> <hr> 
+<p> 
+<b>20/05/2020 11:37:45</b> <br> 
+<i>Model:App\Model\EstoqueModel <br> Erro ao gravar dados: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ' 'ENDERECAMENTO', '2020-05-20 11:05:45', '2020-05-20 11:05:45')' at line 1<br> <b>SQL:</b><span style='color: red'>INSERT INTO lab_estoque ( idetiqueta, armazenamento, peso_armazem, peso_cliente, peso_descarte, idoperador, id_status_end, tipo, created_at, updated_at) VALUES ( '0001', 'A01S02D', '10.001', '07.500', '06.499', '1', , 'ENDERECAMENTO', '2020-05-20 11:05:45', '2020-05-20 11:05:45')</span></i> <br> 
+</p> <hr> 
+<p> 
+<b>20/05/2020 14:52:42</b> <br> 
+<i>Model:App\Model\EstoqueModel <br> Erro ao consultar: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'lab_estoque.idetiquetas' in 'on clause'<br> <b>SQL:</b><span style='color: red'>SELECT * FROM lab_estoque  INNER JOIN lab_etiquetas  ON lab_etiquetas.id = lab_estoque.idetiquetas     LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>20/05/2020 14:58:35</b> <br> 
+<i>Model:App\Model\EstoqueModel <br> Erro ao consultar: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'lab_etiqueta.idcontrato' in 'on clause'<br> <b>SQL:</b><span style='color: red'>SELECT  lab_estoque.id as idestoque,  lab_estoque.armazenamento,  lab_estoque.peso_armazem,  lab_estoque.peso_cliente,  lab_estoque.peso_descarte,  lab_estoque.tipo,  lab_etiquetas.id as idetiqueta,  lab_contrato.hibrido,  lab_contrato.numcontrato,  lab_cliente.nmcliente FROM lab_estoque  INNER JOIN lab_etiquetas  ON lab_etiquetas.id = lab_estoque.idetiqueta  INNER JOIN lab_contrato  ON lab_contrato.id = lab_etiqueta.idcontrato  INNER JOIN lab_cliente  ON lab_cliente.id = lab_cliente.idecliente     LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>20/05/2020 14:58:50</b> <br> 
+<i>Model:App\Model\EstoqueModel <br> Erro ao consultar: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'lab_etiquetas.idecliente' in 'on clause'<br> <b>SQL:</b><span style='color: red'>SELECT  lab_estoque.id as idestoque,  lab_estoque.armazenamento,  lab_estoque.peso_armazem,  lab_estoque.peso_cliente,  lab_estoque.peso_descarte,  lab_estoque.tipo,  lab_etiquetas.id as idetiqueta,  lab_contrato.hibrido,  lab_contrato.numcontrato,  lab_cliente.nmcliente FROM lab_estoque  INNER JOIN lab_etiquetas  ON lab_etiquetas.id = lab_estoque.idetiqueta  INNER JOIN lab_contrato  ON lab_contrato.id = lab_etiquetas.idcontrato  INNER JOIN lab_cliente  ON lab_cliente.id = lab_etiquetas.idecliente     LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>20/05/2020 14:59:41</b> <br> 
+<i>Model:App\Model\EstoqueModel <br> Erro ao consultar: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'lab_estoque.idestoque' in 'where clause'<br> <b>SQL:</b><span style='color: red'>SELECT  lab_estoque.id as idestoque,  lab_estoque.armazenamento,  lab_estoque.peso_armazem,  lab_estoque.peso_cliente,  lab_estoque.peso_descarte,  lab_estoque.tipo,  lab_etiquetas.id as idetiqueta,  lab_contrato.hibrido,  lab_contrato.numcontrato,  lab_cliente.nmcliente FROM lab_estoque  INNER JOIN lab_etiquetas  ON lab_etiquetas.id = lab_estoque.idetiqueta  INNER JOIN lab_contrato  ON lab_contrato.id = lab_etiquetas.idcontrato  INNER JOIN lab_cliente  ON lab_cliente.id = lab_etiquetas.idcliente  WHERE lab_estoque.idestoque = 2   LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>20/05/2020 17:06:22</b> <br> 
+<i>Model:App\Model\EstoqueModel <br> Erro ao consultar: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'lab_estoque.id_status_end' in 'on clause'<br> <b>SQL:</b><span style='color: red'>SELECT  lab_etiquetas.id as idetiqueta,  lab_etiquetas.setor,  lab_estoque.id,  lab_estoque.armazenamento,  lab_estoque.peso_armazem,  lab_estoque.peso_cliente,  lab_estoque.peso_descarte,  lab_estoque.tipo,  lab_contrato.numcontrato,  lab_contrato.hibrido,  lab_cliente.nmcliente,  lab_status_enderecamento.id as iddestino,  lab_status_enderecamento.descricao FROM lab_estoque  INNER JOIN lab_etiquetas  ON lab_etiquetas.id = lab_estoque.idetiqueta  INNER JOIN lab_cliente  ON lab_cliente.id = lab_etiquetas.idcliente  INNER JOIN lab_contrato  ON lab_contrato.id = lab_etiquetas.idcontrato  LEFT JOIN lab_status_enderecamento  ON lab_status_enderecamento.id = lab_estoque.id_status_end     LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>20/05/2020 17:07:00</b> <br> 
+<i>Model:App\Model\EstoqueModel <br> Erro ao consultar: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'lab_estoque.id_status_end' in 'on clause'<br> <b>SQL:</b><span style='color: red'>SELECT  lab_etiquetas.id as idetiqueta,  lab_etiquetas.setor,  lab_estoque.id,  lab_estoque.armazenamento,  lab_estoque.peso_armazem,  lab_estoque.peso_cliente,  lab_estoque.peso_descarte,  lab_estoque.tipo,  lab_contrato.numcontrato,  lab_contrato.hibrido,  lab_cliente.nmcliente,  lab_status_enderecamento.id as iddestino,  lab_status_enderecamento.descricao FROM lab_estoque  INNER JOIN lab_etiquetas  ON lab_etiquetas.id = lab_estoque.idetiqueta  INNER JOIN lab_cliente  ON lab_cliente.id = lab_etiquetas.idcliente  INNER JOIN lab_contrato  ON lab_contrato.id = lab_etiquetas.idcontrato  LEFT JOIN lab_status_enderecamento  ON lab_status_enderecamento.id = lab_estoque.id_status_end     LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>20/05/2020 17:08:14</b> <br> 
+<i>Model:App\Model\EstoqueModel <br> Erro ao consultar: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'lab_status_enderecamento.id' in 'field list'<br> <b>SQL:</b><span style='color: red'>SELECT  lab_etiquetas.id as idetiqueta,  lab_etiquetas.setor,  lab_estoque.id,  lab_estoque.armazenamento,  lab_estoque.peso_armazem,  lab_estoque.peso_cliente,  lab_estoque.peso_descarte,  lab_estoque.tipo,  lab_contrato.numcontrato,  lab_contrato.hibrido,  lab_cliente.nmcliente,  lab_status_enderecamento.id as iddestino,  lab_status_enderecamento.descricao FROM lab_estoque  INNER JOIN lab_etiquetas  ON lab_etiquetas.id = lab_estoque.idetiqueta  INNER JOIN lab_cliente  ON lab_cliente.id = lab_etiquetas.idcliente  INNER JOIN lab_contrato  ON lab_contrato.id = lab_etiquetas.idcontrato     LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>20/05/2020 17:08:15</b> <br> 
+<i>Model:App\Model\EstoqueModel <br> Erro ao consultar: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'lab_status_enderecamento.id' in 'field list'<br> <b>SQL:</b><span style='color: red'>SELECT  lab_etiquetas.id as idetiqueta,  lab_etiquetas.setor,  lab_estoque.id,  lab_estoque.armazenamento,  lab_estoque.peso_armazem,  lab_estoque.peso_cliente,  lab_estoque.peso_descarte,  lab_estoque.tipo,  lab_contrato.numcontrato,  lab_contrato.hibrido,  lab_cliente.nmcliente,  lab_status_enderecamento.id as iddestino,  lab_status_enderecamento.descricao FROM lab_estoque  INNER JOIN lab_etiquetas  ON lab_etiquetas.id = lab_estoque.idetiqueta  INNER JOIN lab_cliente  ON lab_cliente.id = lab_etiquetas.idcliente  INNER JOIN lab_contrato  ON lab_contrato.id = lab_etiquetas.idcontrato     LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>20/05/2020 17:08:20</b> <br> 
+<i>Model:App\Model\EstoqueModel <br> Erro ao consultar: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'lab_status_enderecamento.id' in 'field list'<br> <b>SQL:</b><span style='color: red'>SELECT  lab_etiquetas.id as idetiqueta,  lab_etiquetas.setor,  lab_estoque.id,  lab_estoque.armazenamento,  lab_estoque.peso_armazem,  lab_estoque.peso_cliente,  lab_estoque.peso_descarte,  lab_estoque.tipo,  lab_contrato.numcontrato,  lab_contrato.hibrido,  lab_cliente.nmcliente,  lab_status_enderecamento.id as iddestino,  lab_status_enderecamento.descricao FROM lab_estoque  INNER JOIN lab_etiquetas  ON lab_etiquetas.id = lab_estoque.idetiqueta  INNER JOIN lab_cliente  ON lab_cliente.id = lab_etiquetas.idcliente  INNER JOIN lab_contrato  ON lab_contrato.id = lab_etiquetas.idcontrato     LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>21/05/2020 08:07:50</b> <br> 
+<i>Model:App\Model\EstoqueModel <br> Erro ao gravar dados: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ' '23', '1', '5', '1', '2020-05-21 08:05:50', 'Movimentacao')' at line 1<br> <b>SQL:</b><span style='color: red'>INSERT INTO lab_estoque ( idetiqueta, armazenamento, peso_armazem, peso_cliente, peso_descarte, idoperador, created_at, tipo) VALUES ( '8', , '23', '1', '5', '1', '2020-05-21 08:05:50', 'Movimentacao')</span></i> <br> 
+</p> <hr> 
+<p> 
+<b>23/05/2020 22:08:01</b> <br> 
+<i>Model:App\Model\EtiquetasModel <br> Erro ao consultar: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'lab_etiqueta.id' in 'field list'<br> <b>SQL:</b><span style='color: red'>SELECT  lab_etiqueta.id as idetiqueta,  lab_etiqueta.idcontrato,  lab_contrato.finalizado FROM lab_etiquetas  WHERE  ativo = 'S' AND  id = 0001   LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>23/05/2020 22:08:02</b> <br> 
+<i>Model:App\Model\EtiquetasModel <br> Erro ao consultar: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'lab_etiqueta.id' in 'field list'<br> <b>SQL:</b><span style='color: red'>SELECT  lab_etiqueta.id as idetiqueta,  lab_etiqueta.idcontrato,  lab_contrato.finalizado FROM lab_etiquetas  WHERE  ativo = 'S' AND  id = 0001   LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>23/05/2020 22:08:02</b> <br> 
+<i>Model:App\Model\EtiquetasModel <br> Erro ao consultar: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'lab_etiqueta.id' in 'field list'<br> <b>SQL:</b><span style='color: red'>SELECT  lab_etiqueta.id as idetiqueta,  lab_etiqueta.idcontrato,  lab_contrato.finalizado FROM lab_etiquetas  WHERE  ativo = 'S' AND  id = 0001   LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>23/05/2020 22:08:09</b> <br> 
+<i>Model:App\Model\EtiquetasModel <br> Erro ao consultar: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'lab_etiqueta.id' in 'field list'<br> <b>SQL:</b><span style='color: red'>SELECT  lab_etiqueta.id as idetiqueta,  lab_etiqueta.idcontrato,  lab_contrato.finalizado FROM lab_etiquetas  WHERE  ativo = 'S' AND  id = 0001   LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>23/05/2020 22:08:09</b> <br> 
+<i>Model:App\Model\EtiquetasModel <br> Erro ao consultar: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'lab_etiqueta.id' in 'field list'<br> <b>SQL:</b><span style='color: red'>SELECT  lab_etiqueta.id as idetiqueta,  lab_etiqueta.idcontrato,  lab_contrato.finalizado FROM lab_etiquetas  WHERE  ativo = 'S' AND  id = 0001   LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>23/05/2020 22:08:14</b> <br> 
+<i>Model:App\Model\EtiquetasModel <br> Erro ao consultar: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'lab_contrato.finalizado' in 'field list'<br> <b>SQL:</b><span style='color: red'>SELECT  lab_etiquetas.id as idetiqueta,  lab_etiquetas.idcontrato,  lab_contrato.finalizado FROM lab_etiquetas  WHERE  ativo = 'S' AND  id = 0001   LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>23/05/2020 22:08:14</b> <br> 
+<i>Model:App\Model\EtiquetasModel <br> Erro ao consultar: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'lab_contrato.finalizado' in 'field list'<br> <b>SQL:</b><span style='color: red'>SELECT  lab_etiquetas.id as idetiqueta,  lab_etiquetas.idcontrato,  lab_contrato.finalizado FROM lab_etiquetas  WHERE  ativo = 'S' AND  id = 0001   LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>23/05/2020 22:08:16</b> <br> 
+<i>Model:App\Model\EtiquetasModel <br> Erro ao consultar: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'lab_contrato.finalizado' in 'field list'<br> <b>SQL:</b><span style='color: red'>SELECT  lab_etiquetas.id as idetiqueta,  lab_etiquetas.idcontrato,  lab_contrato.finalizado FROM lab_etiquetas  WHERE  ativo = 'S' AND  id = 0001   LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>23/05/2020 22:08:16</b> <br> 
+<i>Model:App\Model\EtiquetasModel <br> Erro ao consultar: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'lab_contrato.finalizado' in 'field list'<br> <b>SQL:</b><span style='color: red'>SELECT  lab_etiquetas.id as idetiqueta,  lab_etiquetas.idcontrato,  lab_contrato.finalizado FROM lab_etiquetas  WHERE  ativo = 'S' AND  id = 0001   LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>23/05/2020 22:08:36</b> <br> 
+<i>Model:App\Model\EtiquetasModel <br> Erro ao consultar: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'lab_contrato.finalizado' in 'field list'<br> <b>SQL:</b><span style='color: red'>SELECT  lab_etiquetas.id as idetiqueta,  lab_etiquetas.idcontrato,  lab_contrato.finalizado FROM lab_etiquetas  WHERE  ativo = 'S' AND  id = 0001   LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>23/05/2020 22:09:05</b> <br> 
+<i>Model:App\Model\EtiquetasModel <br> Erro ao consultar: SQLSTATE[23000]: Integrity constraint violation: 1052 Column 'ativo' in where clause is ambiguous<br> <b>SQL:</b><span style='color: red'>SELECT  lab_etiquetas.id as idetiqueta,  lab_etiquetas.idcontrato,  lab_contrato.finalizado FROM lab_etiquetas  INNER JOIN lab_contrato  ON lab_contrato.id = lab_etiquetas.idcontrato  WHERE  ativo = 'S' AND  id = 0001   LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>23/05/2020 22:09:07</b> <br> 
+<i>Model:App\Model\EtiquetasModel <br> Erro ao consultar: SQLSTATE[23000]: Integrity constraint violation: 1052 Column 'ativo' in where clause is ambiguous<br> <b>SQL:</b><span style='color: red'>SELECT  lab_etiquetas.id as idetiqueta,  lab_etiquetas.idcontrato,  lab_contrato.finalizado FROM lab_etiquetas  INNER JOIN lab_contrato  ON lab_contrato.id = lab_etiquetas.idcontrato  WHERE  ativo = 'S' AND  id = 0001   LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>23/05/2020 22:09:15</b> <br> 
+<i>Model:App\Model\EtiquetasModel <br> Erro ao consultar: SQLSTATE[23000]: Integrity constraint violation: 1052 Column 'ativo' in where clause is ambiguous<br> <b>SQL:</b><span style='color: red'>SELECT  lab_etiquetas.id as idetiqueta,  lab_etiquetas.idcontrato,  lab_etiquetas.ativo,  lab_contrato.finalizado FROM lab_etiquetas  INNER JOIN lab_contrato  ON lab_contrato.id = lab_etiquetas.idcontrato  WHERE  ativo = 'S' AND  id = 0001   LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>23/05/2020 22:09:15</b> <br> 
+<i>Model:App\Model\EtiquetasModel <br> Erro ao consultar: SQLSTATE[23000]: Integrity constraint violation: 1052 Column 'ativo' in where clause is ambiguous<br> <b>SQL:</b><span style='color: red'>SELECT  lab_etiquetas.id as idetiqueta,  lab_etiquetas.idcontrato,  lab_etiquetas.ativo,  lab_contrato.finalizado FROM lab_etiquetas  INNER JOIN lab_contrato  ON lab_contrato.id = lab_etiquetas.idcontrato  WHERE  ativo = 'S' AND  id = 0001   LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>23/05/2020 22:09:17</b> <br> 
+<i>Model:App\Model\EtiquetasModel <br> Erro ao consultar: SQLSTATE[23000]: Integrity constraint violation: 1052 Column 'ativo' in where clause is ambiguous<br> <b>SQL:</b><span style='color: red'>SELECT  lab_etiquetas.id as idetiqueta,  lab_etiquetas.idcontrato,  lab_etiquetas.ativo,  lab_contrato.finalizado FROM lab_etiquetas  INNER JOIN lab_contrato  ON lab_contrato.id = lab_etiquetas.idcontrato  WHERE  ativo = 'S' AND  id = 0001   LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>23/05/2020 22:26:48</b> <br> 
+<i>Model:App\Model\EtiquetasModel <br> Erro ao consultar: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'lab_etiquetas.id2' in 'where clause'<br> <b>SQL:</b><span style='color: red'>SELECT  lab_etiquetas.id as idetiqueta,  lab_etiquetas.idcliente,  lab_etiquetas.setor,  lab_etiquetas.idcontrato,  lab_etiquetas.ativo,  lab_contrato.finalizado FROM lab_etiquetas  INNER JOIN lab_contrato  ON lab_contrato.id = lab_etiquetas.idcontrato  WHERE  lab_etiquetas.ativo = 'S' AND  lab_etiquetas.id2 = 0008   LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>23/05/2020 22:28:22</b> <br> 
+<i>Model:App\Model\EtiquetasModel <br> Erro ao consultar: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'lab_etiquetas.id2' in 'where clause'<br> <b>SQL:</b><span style='color: red'>SELECT  lab_etiquetas.id as idetiqueta,  lab_etiquetas.idcliente,  lab_etiquetas.setor,  lab_etiquetas.idcontrato,  lab_etiquetas.ativo,  lab_contrato.finalizado FROM lab_etiquetas  INNER JOIN lab_contrato  ON lab_contrato.id = lab_etiquetas.idcontrato  WHERE  lab_etiquetas.ativo = 'S' AND  lab_etiquetas.id2 = 0008   LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>23/05/2020 22:28:22</b> <br> 
+<i>Model:App\Model\EtiquetasModel <br> Erro ao consultar: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'lab_etiquetas.id2' in 'where clause'<br> <b>SQL:</b><span style='color: red'>SELECT  lab_etiquetas.id as idetiqueta,  lab_etiquetas.idcliente,  lab_etiquetas.setor,  lab_etiquetas.idcontrato,  lab_etiquetas.ativo,  lab_contrato.finalizado FROM lab_etiquetas  INNER JOIN lab_contrato  ON lab_contrato.id = lab_etiquetas.idcontrato  WHERE  lab_etiquetas.ativo = 'S' AND  lab_etiquetas.id2 = 0008   LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>25/05/2020 13:57:32</b> <br> 
+<i>Model:App\Model\AmostrasModel <br> Erro ao consultar: SQLSTATE[23000]: Integrity constraint violation: 1052 Column 'numetiqueta' in where clause is ambiguous<br> <b>SQL:</b><span style='color: red'>SELECT  lab_amostra.id as idamostra,  lab_amostra.protocolo,  lab_amostra.observacao,  lab_amostra.dtamostra,  lab_tipoamostra.descricao,  lab_tipoamostra.setor,  lab_operador.name FROM lab_amostra  INNER JOIN lab_etiquetas  ON lab_etiquetas.id = lab_amostra.numetiqueta  INNER JOIN lab_tipoamostra  ON lab_tipoamostra.id = lab_amostra.idtipoamostra  INNER JOIN lab_operador  ON lab_operador.id = lab_amostra.idoperador  WHERE numetiqueta = 1   LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>25/05/2020 13:58:05</b> <br> 
+<i>Model:App\Model\AmostrasModel <br> Erro ao consultar: SQLSTATE[23000]: Integrity constraint violation: 1052 Column 'numetiqueta' in where clause is ambiguous<br> <b>SQL:</b><span style='color: red'>SELECT  lab_amostra.id as idamostra,  lab_amostra.protocolo,  lab_amostra.observacao,  lab_amostra.dtamostra,  lab_tipoamostra.descricao,  lab_tipoamostra.setor,  lab_operador.name FROM lab_amostra  INNER JOIN lab_etiquetas  ON lab_etiquetas.id = lab_amostra.numetiqueta  INNER JOIN lab_tipoamostra  ON lab_tipoamostra.id = lab_amostra.idtipoamostra  INNER JOIN lab_operador  ON lab_operador.id = lab_amostra.idoperador  WHERE numetiqueta = 1   LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>25/05/2020 15:22:06</b> <br> 
+<i>Model:App\Model\EstoqueModel <br> Erro ao consultar: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'lab_operador.name' in 'field list'<br> <b>SQL:</b><span style='color: red'>SELECT  lab_estoque.*,  lab_operador.name FROM lab_estoque  WHERE idetiqueta = 5   LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>25/05/2020 15:22:25</b> <br> 
+<i>Model:App\Model\EstoqueModel <br> Erro ao consultar: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'lab_operador.name' in 'field list'<br> <b>SQL:</b><span style='color: red'>SELECT  lab_estoque.*,  lab_operador.name FROM lab_estoque  WHERE idetiqueta = 5   LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>25/05/2020 15:22:50</b> <br> 
+<i>Model:App\Model\EstoqueModel <br> Erro ao consultar: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'lab_operador.name' in 'field list'<br> <b>SQL:</b><span style='color: red'>SELECT  lab_estoque.*,  lab_operador.name FROM lab_estoque  WHERE idetiqueta = 5   LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>25/05/2020 15:23:11</b> <br> 
+<i>Model:App\Model\EstoqueModel <br> Erro ao consultar: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'lab_operador.name' in 'field list'<br> <b>SQL:</b><span style='color: red'>SELECT  lab_estoque.*,  lab_operador.name FROM lab_estoque  WHERE idetiqueta = 5   LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>25/05/2020 15:23:29</b> <br> 
+<i>Model:App\Model\EstoqueModel <br> Erro ao consultar: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'lab_operador.name' in 'field list'<br> <b>SQL:</b><span style='color: red'>SELECT  lab_estoque.*,  lab_operador.name FROM lab_estoque  WHERE idetiqueta = 1   LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>25/05/2020 16:18:16</b> <br> 
+<i>Model:App\Model\AmostrasModel <br> Erro ao consultar: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'lab_etiqueta.id' in 'field list'<br> <b>SQL:</b><span style='color: red'>SELECT lab_amostra.id, lab_amostra.protocolo, lab_amostra.dtamostra, lab_amostra.peso, lab_amostra.observacao, lab_tipoamostra.descricao as "TPDesc", lab_cliente.nmcliente,  lab_amostra.created_at as "amostra_created_at",  lab_contrato.hibrido, lab_contrato.numcontrato, lab_safra.descricao as "safra" ,lab_operador.name, lab_etiqueta.id as idetiqueta, lab_etiquetas.setor FROM lab_amostra  INNER JOIN lab_contrato  ON lab_contrato.id = lab_amostra.idcontrato  INNER JOIN lab_etiquetas  ON lab_etiquetas.id = lab_amostra.numetiqueta  INNER JOIN lab_cliente  ON lab_cliente.id = lab_contrato.idcliente  INNER JOIN lab_safra  ON lab_safra.id = lab_contrato.idsafra  INNER JOIN lab_tipoamostra  ON lab_tipoamostra.id = lab_amostra.idtipoamostra  INNER JOIN lab_operador  ON lab_operador.id = lab_amostra.idoperador  WHERE  lab_amostra.ativo = 'S' AND  lab_contrato.finalizado = 'N'   LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>25/05/2020 16:39:48</b> <br> 
+<i>Model:App\Model\TesteModel <br> Erro ao buscar registro por ID: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '' at line 1<br> <b>SQL:</b><span style='color: red'>SELECT * FROM lab_teste WHERE idetiqueta = </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>25/05/2020 16:39:56</b> <br> 
+<i>Model:App\Model\TesteModel <br> Erro ao buscar registro por ID: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '' at line 1<br> <b>SQL:</b><span style='color: red'>SELECT * FROM lab_teste WHERE idetiqueta = </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>11/06/2020 23:02:05</b> <br> 
+<i>Model:App\Model\EtiquetasModel <br> Erro ao consultar: SQLSTATE[42000]: Syntax error or access violation: 1055 Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'valorem_scal2.lab_cliente.id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by<br> <b>SQL:</b><span style='color: red'>SELECT  lab_cliente.id as "idcliente",  lab_cliente.nmcliente,  lab_cliente.descricao,  lab_contrato.id as "idcontrato",  lab_contrato.numcontrato,  lab_contrato.hibrido,  lab_etiquetas.ativo FROM lab_etiquetas  INNER JOIN lab_cliente  ON lab_cliente.id = lab_etiquetas.idcliente  INNER JOIN lab_contrato  ON lab_contrato.id = lab_etiquetas.idcontrato   WHERE lab_etiquetas.ativo = 'S' GROUP BY lab_contrato.id, lab_contrato.hibrido  LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>14/06/2020 11:31:12</b> <br> 
+<i>Model:App\Model\EtiquetasModel <br> Erro ao consultar: SQLSTATE[42000]: Syntax error or access violation: 1055 Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'valorem_scal2.lab_cliente.id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by<br> <b>SQL:</b><span style='color: red'>SELECT  lab_cliente.id as "idcliente",  lab_cliente.nmcliente,  lab_cliente.descricao,  lab_contrato.id as "idcontrato",  lab_contrato.numcontrato,  lab_contrato.hibrido,  lab_etiquetas.ativo FROM lab_etiquetas  INNER JOIN lab_cliente  ON lab_cliente.id = lab_etiquetas.idcliente  INNER JOIN lab_contrato  ON lab_contrato.id = lab_etiquetas.idcontrato   WHERE lab_etiquetas.ativo = 'S' GROUP BY lab_contrato.id, lab_contrato.hibrido  LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 

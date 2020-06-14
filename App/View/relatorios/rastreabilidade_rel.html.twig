@@ -1,0 +1,158 @@
+{% extends 'page.html.twig' %}
+
+{% block content %}
+
+    <section class="invoice">
+        {% for etiqueta in etiquetas %}
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="page-header">Rastreabilidade</h2>
+                <p class="pull-right">Gerado em: {{ now|date('d/m/Y H:i:s') }}
+                <h3>{{ etiqueta.nmcliente }}</h3>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <h4 class="bg-gray" style="padding:10px" >Dados da etiqueta</h4>
+                {% for etiqueta in etiquetas %}
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ID etiqueta</th>
+                                    <th>Gerada em</th>
+                                    <th>Gerada Por</th>
+                                    <th>Contrato</th>
+                                    <th>Hibrido</th>
+                                    <th>Safra</th>
+                                   
+                                </tr>
+                            </thead>
+                            </tbody>
+                                <tr>
+                                    <td>{{ "%04d"|format(etiqueta.idetiqueta) }}</td>
+                                    <td>{{ etiqueta.dtetiqueta|date('d/m/Y H:i:s') }}</td>
+                                    <td>{{ etiqueta.name }}</td>
+                                    <td>{{ etiqueta.numcontrato }}</td>
+                                    <td>{{ etiqueta.hibrido}}</td>
+                                    <td>{{ etiqueta.safra }}</td>
+                                   
+                                <tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <h4 class="bg-gray" style="padding:10px" >Dados da amostra</h4>
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ID Amostra</th>
+                                    <th>Data da amostra</th>
+                                    <th>Protocolo</th>
+                                    <th>Observação</th>
+                                    <th>Tipo Amostra</th>
+                                    <th>Setor</th>
+                                    <th>Operador</th>
+                                </tr>
+                            </thead>
+                            </tbody>
+                                <tr>
+                                    {% for amostra in amostras %}
+                                        <td>{{ "%04d"|format(amostra.idamostra) }}</td>
+                                        <td>{{ amostra.dtamostra|date('d/m/Y H:i:s') }}</td>
+                                        <td>{{ amostra.protocolo }}</td>
+                                        <td>{{ amostra.observacao }}</td>
+                                        <td>{{ amostra.tipo}}</td>
+                                        <td>{{ amostra.setor == 'R' ? 'RECEBIMENTO' : 'TORRE' }}</td>
+                                        <td>{{ amostra.name }}</td>
+                                    {% endfor %}
+                                <tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-xs-12">
+                <h4 class="bg-gray" style="padding:10px" >Testes realizados</h4>
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Data/Hora Inicio</th>
+                                    <th>Operador Inicio</th>
+                                    <th>Data/Hora Fim</th>
+                                    <th>Operador Fim</th>
+                                </tr>
+                            </thead>
+                            </tbody>
+                                {% for teste in testes %}
+                                <tr>
+                                    <td>{{ teste.dtinicio|date('d/m/Y H:i:s') }}</td>
+                                    <td>{{ teste.nameinicio }}</td>
+                                    <td>{{ teste.dttermino|date('d/m/Y H:i:s') }}</td>
+                                    <td>{{ teste.namefim }}</td>
+                                <tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-xs-12">
+                <h4 class="bg-gray" style="padding:10px" >Estoque e movimentação realizada</h4>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Local Armazenado</th>
+                                    <th>Peso Armazém</th>
+                                    <th>Peso enviado ao cliente</th>
+                                    <th>Peso descartado</th>
+                                    <th>Operador</th>
+                                    <th>Data do sistema</th>
+                                </tr>
+                            </thead>
+                            </tbody>
+                                {% for estoque in estoques %}
+                                <tr>
+                                    <td>{{ estoque.armazenamento }}</td>
+                                    <td>{{ estoque.peso_armazem|number_format(3,'.',',') }}</td>
+                                    <td>{{ estoque.peso_cliente|number_format(3,'.',',') }}</td>
+                                    <td>{{ estoque.peso_descarte|number_format(3,'.',',') }}</td>
+                                    <td>{{ estoque.name }}</td>
+                                    <td>{{ estoque.created_at|date('d/m/Y H:i:s') }}</td>
+                                <tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        {% endfor %}
+    </section>
+
+{% endblock %}

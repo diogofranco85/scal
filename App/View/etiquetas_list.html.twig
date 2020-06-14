@@ -1,0 +1,118 @@
+{% extends 'page.html.twig' %}
+
+{% block css %}
+    {{ css('datatables') }}
+{% endblock %}
+
+{% block content %}
+    <div class="box-header">
+        <h3 class="box-title">Listagem de etiquetas geradas</h3>
+        <a href="#" onclick="window.history.back();" class="pull-right btn btn-flat bg-gray btn-sm"><i class="fa fa-angle-double-left"></i> Voltar</a>
+    </div>
+    <table class="table table-bordered table-striped dataTable" id="grid" data-page-length='{{ limit_data }}'>
+        <thead>
+        <tr>
+            <th>Num.Etiqueta</th>
+            <th>Lote Final</th>
+            <th>Contrato</th>
+            <th>Hibrido</th>
+            <th>Setor Responsável</th>
+            <th>Operador</th>
+            <th>Status</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for e in etiquetas %}
+            <tr>
+                <td>{{ "%04d"|format(e.numetiqueta) }}</td>
+                <td>{{ (e.lotefinal == '0') ? '' : e.lotefinal }}</td>
+                <td>{{ e.numcontrato }}</td>
+                <td>{{ e.hibrido }}</td>
+                <td>{{ e.setor == 'R' ? 'RECEBIMENTO' : 'TORRE' }}</td>
+                <td>{{ e.name }}</td>
+                <td>
+                    {%  if e.status == 'N' %}
+                        <span class="label label-success ">NOVO</span>
+                    {% elseif e.status == 'U' %}
+                        <span class="label label-warning">ETIQUETA EM USO</span>
+                    {% else %}
+                        <span class="label label-danger ">ETIQUETA CANCELADA
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ url('/etiqueta/imprimir') }}/{{ e.id }}" target="_blank" class="{{ btnprint }}"><i class="{{ iconprint }}"></i> Imprimir</a>
+                </td>
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- modal -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="formmodal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Modal title</h4>
+                </div>
+                <div class="modal-body">
+                    <form class='form' id='form'>
+                        <div class='row'>
+                            <div class='col-md-12'>
+                                <div class='form-group'>
+                                    <label for='idcliente'>Cliente</label>
+                                    <select class='form-control' name='idcliente' id='idcliente' >
+                                        {% for cliente in clientes %}
+                                            <option value="{{ cliente.id }}">{{ cliente.nmcliente }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class='row'>
+                            <div class='col-md-9'>
+                                <div class='form-group'>
+                                    <label for='idcontrato'>Contrato / Hibrido </label>
+                                    <select class='form-control' name='idcontrato' id='idcontrato' >
+
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class='col-md-3'>
+                                <div class='form-group'>
+                                    <label for='numetiquetas'>Qde p/ Gerar</label>
+                                    <input class='form-control' type='number' name='numetiquetas' id='numetiquetas' value="1" minlength="1"/>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary btn-save">Salvar</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+{% endblock %}
+
+{% block js %}
+    {{ js('datatables') }}
+    <script>
+       $(document).ready(function(){
+           var table = $('#grid').DataTable({
+               language: {
+                   url: '{{ assets('bower_components/datatables.net/js/Portuguese-Brasil.json') }}'
+               },
+               order: [[ 4, 'asc']],
+           });
+
+
+    })
+    </script>
+
+{% endblock %}

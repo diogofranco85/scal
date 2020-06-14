@@ -1,0 +1,22 @@
+{% extends 'page.html.twig' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-3">
+            <div class="info-box bg-gray">
+            <span class="info-box-icon"><i class="ion ion-ios-pricetag-outline"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">Rastreabilidade</span>
+
+                <div class="progress">
+                <div class="progress-bar" style="width: 50%"></div>
+                </div>
+                    <a href="{{ url('/relatorio/rastreabilidade') }}" class="col-md-12 btn btn-default btn-flat">Gerar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+
+{% endblock %}

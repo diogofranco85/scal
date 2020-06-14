@@ -1,0 +1,95 @@
+<div class="row">
+    <div class="col-md-12">
+        <input type="hidden" value="" name="idcliente" id="idcliente">
+        <div class="form-group">
+            <label for="nmcliente">Cliente</label>
+            <input type="text" name="nmcliente" class="form-control" id="nmcliente" readonly />
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <input type="hidden" value="" name="idcontrato" id="idcontrato">
+        <div class="form-group">
+            <label for="nmcliente">Contrato</label>
+            <input type="text" name="numcontrato" class="form-control" id="numcontrato" readonly />
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="numcliente">Hibrido</label>
+            <input type="text" name="hibrido" class="form-control" id="hibrido" readonly />
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="idarmazenamento">Armazenamento</label>
+            <input type="text" class="form-control" name="armazenamento" id="armazenamento"/>
+        </div>
+    </div>
+
+     <div class='col-md-2'>
+        <div class='form-group'>
+            <label for='operador'>Cód.Resp.</label>
+            <input class='form-control' name='idoperador' id='idoperador' required >
+            <span class="nameOperador"></span>
+        </div>
+    </div>
+
+    <div class='col-md-4'>
+        <div class='form-group'>
+            <label for='operador'>Responsável</label>
+            <input class='form-control' disabled name='operador' id='operador' required >
+            <span class="nameOperador"></span>
+        </div>
+    </div>
+
+</div>
+
+<div class="row">
+    
+     <div class="col-md-4">
+        <div class="form-group">
+            <label for="pesoarmazem">Peso Armazenado</label>
+            <input type="number" class="form-control" name="pesoarmazem" id="pesoarmazem" step="any">
+        </div>
+    </div>
+
+     <div class="col-md-4">
+        <div class="form-group">
+            <label for="pesocliente">Peso enviado ao Cliente</label>
+            <input type="number" class="form-control" name="pesocliente" id="pesocliente" step="any">
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="form-group">
+            <label for="pesodescarte">Peso Descartado / Perda</label>
+            <input type="number" step="any" class="form-control" name="pesodescarte" id="pesodescarte">  
+        </div>
+    </div>
+</div>
+
+<script>
+$('#pesoarmazem').mask('#0.000',{ reverse: true });
+$('#pesocliente').mask('#0.000',{ reverse: true });
+$('#pesodescarte').mask('#0.000',{ reverse: true });
+
+$('#idoperador').bind('keyup keypress focus paste',function(e){
+    const cod = $(this).val();
+    
+    if(cod.length < 3 ){
+        return;
+    }
+
+    $.get(`{{ url_base }}/operador/${cod}`, {cod}, (data) => {
+            $('#operador').val(data.name);
+    });
+})
+
+</script>

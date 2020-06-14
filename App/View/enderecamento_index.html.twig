@@ -1,0 +1,216 @@
+{% extends 'page.html.twig' %}
+
+{% block css %}
+    {{ css('toastr') }}
+    {{ css('datatables') }}
+    <style>
+        tr.group{
+            background-color: #006C38 !important;
+            color: white;
+            width: 100% !important;
+        };
+        tr.group:hover {
+            text-decoration: underline;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="box-header">
+        <h3 class="box-title">Listagem de amostras endereçadas</h3>
+        <a href="#" class=" {{ btnnew }} pull-right btnnew"><i class="fa fa-plus"></i> Novo </a>
+    </div>
+    <div class="container-fluid">
+
+        <table class="{{ datatable_class }}" id="grid" data-page-length='100'>
+            <thead>
+            <tr>
+                <th>Armazenamento</th>
+                <th>Tipo</th>
+                <th>Cliente</th>
+                <th>Contrato</th>
+                <th>Hibrido</th>
+                <th>Etiqueta</th>
+                <th>Peso Armazenado</th>
+                <th>Peso Enviado ao Cliente</th>
+                <th>Peso Descarte / Perda</th>
+                <th>Peso total</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for estoque in rs_estoque %}
+                <tr>
+                    <td>{{ estoque.armazenamento }}</td>
+                    <td>{{ estoque.tipo }}</td>
+                    <td>{{ estoque.nmcliente }}</td>
+                    <td>{{ estoque.numcontrato }}</td>
+                    <td>{{ estoque.hibrido }}</td>
+                    <td>{{ "%04d"|format(estoque.idetiqueta) }}</td>
+                    <td>{{ estoque.peso_armazem|number_format(3,'.',',') }} KG</td>
+                    <td>{{ estoque.peso_enviocliente|number_format(3,'.',',') }} KG</td>
+                    <td>{{ estoque.peso_descarte|number_format(3,'.',',') }} KG</td>
+                    <td><strong>{{ (estoque.peso_armazem + estoque.peso_descarte + estoque.peso_enviocliente)|number_format(3,'.',',') }} KG</strong></td>
+                    <td>
+                        <!--
+                        <a href="{{ url('')}}/movimentacao/{{ estoque.id }}/estoque/{{ estoque.idetiqueta }}"  class="btn btn-flat btn-sm btn-success"><i class="fa fa-arrows-alt"></i> Movimentar</a>
+                        -->
+                        
+                        <a href="{{ url('')}}/movimentacao/{{ estoque.id }}/estoque/{{ estoque.idetiqueta }}/editar"  class="{{ btnedit }}"><i class="{{ iconedit }}"></i> Editar</a>
+                        
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+
+    <!-- modal -->
+    <form class='form' id='frm' action="#" method="post" style="margin-top: 5px">
+        <div class="modal fade" tabindex="-1" role="dialog" id="formmodal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Modal title</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div id="loadcode">
+                            <div class='row'>
+                                <!--
+                                <div class='col-md-6'>
+                                    <div class='form-group'>
+                                        <label for='operador'>Operador</label>
+                                        <input type="number" style="text-align: center" class='form-control input-lg codebar_font' name='operador' id='operador'>
+                                    </div>
+                                </div>
+                                -->
+
+                                <div class='col-md-12'>
+                                    <div class='form-group' id="inputetiqueta">
+                                        <label for='numetiqueta'>Etiqueta</label>
+                                        <input type="number" style="text-align: center" class='form-control input-lg codebar_font' name='numetiqueta' id='numetiqueta'>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <!--
+                        -- INICIO LOADFIELDS
+                        -- CARREGAR FORMULARIO DE AMOSTRA E DADOS DO CLIENTE E CONTRATO
+                        -->
+                        <div id="loadfield"></div>
+                        <!-- FIM DO LOADFIELDS -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default btn-flat" data-dismiss="modal"><i class="fa fa-close"></i> Fechar</button>
+                        <button type="submit" class="btn btn-primary btn-flat btn-save"><i class="fa fa-save"></i> Salvar</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+    </form>
+
+{% endblock %}
+
+{% block js %}
+    {{ js('datatables') }}
+    {{ js('jquerymask') }}
+    {{ js('toastr') }}
+    <script>
+        $(document).ready(function(){
+
+            $('#peso').mask('#0.000',{ reverse: true });
+
+            var groupColumn = 0;
+            var table = $('#grid').DataTable({
+                responsive: true,
+                language: {
+                    url: '{{ assets('bower_components/datatables.net/js/Portuguese-Brasil.json') }}'
+                }
+            });
+
+            $(".btnnew").on('click',function(){
+                $('#formmodal').modal();
+                $('.modal-title').html('Adicionar endereçamento');
+                //$('#inputetiqueta').hide();
+                $('#numetiqueta').val('');
+                $('#loadfield').html('');
+                $('#formmodal').on('shown.bs.modal',function(event){
+                    $('#numetiqueta').focus();
+                });
+
+            })
+
+            $('#numetiqueta').bind('keyup keypress paste', function(){
+                const etiqueta = $(this).val();
+                if(etiqueta.length > 3){
+                    fncloadfields(etiqueta);
+                }
+
+            })
+
+            $("#frm").submit(function( event ){
+                event.preventDefault();
+
+                verificarlogin();
+                
+                const data = $('#frm').serialize();
+                const idcliente = $('#idcliente').val();
+                const url = `{{ url('/enderecamento/${idcliente}/store') }}`;
+                $.ajax({
+                    url,
+                    data,
+                    dataType: 'json',
+                    method: 'post',
+                    success: function(data){
+                        $('#formmodal').modal('hide');
+                        $('#formmodal').on('hidden.bs.modal',function(){
+                            toastr.success('Dados Cadastrado com sucesso','Valorem SCAL', );
+                            let reload = setInterval(() => {
+                                    location.reload(true);
+                                }, 1000);
+                       });  
+                    }
+                })
+            })
+
+            
+
+            const fncloadfields = ( etiqueta ) => {
+
+                verificarlogin();
+                
+                $.ajax({
+                    url: "{{ url('/enderecamento/validar/etiqueta') }}",
+                    method: 'post',
+                    data: { etiqueta },
+                    dataType: 'json',
+                    success: (response) => {
+                            if( response.status == 200 ){
+                                $.get('{{ url("/enderecamento/fields") }}', function(datahtml){
+                                    $('#loadfield').html(datahtml);
+                                    $('#idcliente').val(response.data.idcliente);
+                                    $('#nmcliente').val(response.data.nmcliente);
+                                    $('#numcliente').val(response.data.numcliente);
+                                    $('#numcontrato').val(response.data.numcontrato);
+                                    $('#hibrido').val(response.data.hibrido);
+                                    $('#idcontrato').val(response.data.idcontrato);
+                                })
+                            }else{
+                                $('#loadfield').html('');
+                                toastr.error(response.message);
+
+                            }
+                        }
+                })
+            }
+
+        })
+
+    </script>
+{% endblock %}

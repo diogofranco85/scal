@@ -1,0 +1,41 @@
+{% for info in amostra %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="nmcliente">Cliente</label>
+            <input type="text" value={{ info.nmcliente }} id="nmcliente" name="nmcliente" readonly="readonly" class="form-control">
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label for="nmcliente">Contrato</label>
+            <input type="text" value={{ info.numcontrato }} id="numcontrato" name="numcontrato" readonly="readonly" class="form-control">
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label for="nmcliente">Híbrido</label>
+            <input type="text" value={{ info.hibrido }} id="hibrido" name="hibrido" readonly="readonly" class="form-control">
+        </div>
+    </div>
+
+     <div class="col-md-4">
+        <div class="form-group">
+            <label for="nmcliente">Setor</label>
+            <input type="text" value={{ info.setor == 'R' ? 'RECEBIMENTO' : 'TORRE' }} id="setor" name="setor" readonly="readonly" class="form-control">
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    
+</div>
+
+    <input type="hidden" name="idcliente" value="{{ info.idcliente }}"/>
+    <input type="hidden" name="idcontrato" value="{{ info.idcontrato }}"/>
+    <input type="hidden" name="idamostra" value="{{ info.idamostra }}"/>
+
+{%  endfor %}

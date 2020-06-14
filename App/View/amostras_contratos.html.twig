@@ -1,0 +1,6 @@
+<label for="inp-idcontrato">Numero do contrato / Hibrido</label>
+<select class="form-control" id="idcontrato"  name="idcontrato">
+    {% for c in contrato %}
+        <option value="{{ c.id }}">{{ c.numcontrato }} &raquo; Híbrido: {{ c.hibrido }} </option>
+    {% endfor %}
+</select>

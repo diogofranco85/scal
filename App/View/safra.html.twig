@@ -1,0 +1,150 @@
+{% extends 'page.html.twig' %}
+
+{% block css %}
+  {{ css('datatables') }}
+  {{ css('toastr') }}
+  {{ css('icheck') }}
+{% endblock %}
+
+{% block content %}
+<div class="box-header">
+  <h3 class="box-title">Cadastramento de safra</h3>
+  <button type="button" id="btnnew" class="{{ btnnew }} pull-right"><i class="{{ iconnew }}"></i> Novo</button>
+</div>
+<table class="table table-bordered table-striped dataTable" id="grid" data-page-length='100'>
+  <thead>
+    <tr>
+      <th>Descricao</th>
+      <th>Finalizado</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>  
+        {% for data in datas %}
+            <tr>
+                <td>{{ data.descricao }}</td>
+                <td>
+                  <div class="icheckbox_flat-green {{ data.finalizado == 'S' ? 'checked' : '' }}" aria-checkbox="{{ data.finalizado == 'S' ? 'true' : 'false' }}" aria-disabled="true">
+                    <input type="checkbox" class="minimal" disabled {{ data.finalizado == 'S' ? 'checked' : '' }}/>
+                  </div>
+                </td>
+                <td>
+                    <div class="btn-group">
+                        <a href="#" post_id="{{ data.id }}" post_info="{{ data.descricao }}" class="{{ btnedit }} btnedit">
+                            <i class="{{ iconedit }}"></i> Editar
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+  </tbody>
+</table>
+
+<!-- modal -->
+<form action="#" method="post" class="form" id="frm">
+<div class="modal fade" tabindex="-1" role="dialog" id="formmodal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Safra</h4>
+      </div>
+      <div class="modal-body">
+          <form class='form' action='{{ url_base }}/safra' method='post'>
+              <input type="hidden" name="id" id="id"/>
+              <div class="form-group">
+                  <label for='descricao'>Descrição</label>
+                  <input type='text' class='form-control' name='descricao' id='descricao' required/>
+              </div>
+          </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-sign-out fa-fw"></i> Fechar</button>
+        <button type="submit" id="btnsave" class="btn btn-primary"><i class="fa fa-save fa-fw"></i> Salvar</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+</form>
+
+
+{% endblock %}
+
+{% block js %}
+  {{ js('datatables') }}
+  {{ js('validate') }}
+  {{ js('toastr') }}
+  {{ js('icheck') }}
+
+  <script>
+    $(document).ready(function(){
+       
+       var table = $('#grid').DataTable({
+         responsive: true,
+          language: {
+            url: '{{ assets('bower_components/datatables.net/js/Portuguese-Brasil.json') }}'
+          }
+        });
+
+      $("#frm").validate();
+
+      $('#btnnew').click(() => {
+        $('#formmodal').modal()
+        $('#id').val('');
+        $('#descricao').val('');
+      })
+
+      $('body').on('click','.btnedit',function(e){
+        let idform = $(this).attr('post_id'); 
+        let desform = $(this).attr('post_info'); 
+        $('#id').val(idform);
+        $('#descricao').val(desform);
+        $('#formmodal').modal();
+      })
+
+      $("#frm").submit((e) => {
+        e.preventDefault();
+
+        const id = $('#id').val();
+
+        if(id === ''){
+          var envtype = 'POST';
+          var envdata = { descricao: $('#descricao').val() }
+        }else{
+          var envtype = 'PUT';
+          var envdata = { 
+            id: $('#id').val(),
+            descricao: $('#descricao').val() ,
+            };
+        }
+
+        $.ajax({
+            url: $('#frm').attr('action'),
+            data: envdata,
+            type: envtype,
+            dataType: 'JSON',
+            success: function(response){
+                if(response.code === 200){
+                  toastr.success(response.message, 'Valorem SCAL', {"closeButton": true});
+                        let reload = setInterval(() => {
+                            location.reload(true);
+                        }, 1000);
+                }else{
+                   toastr.error(response.message, 'Valorem SCAL', { "closeButton": true});
+                }
+            }
+        });
+
+        return false;
+      })
+
+       $('input').iCheck({
+        checkboxClass: 'icheckbox_flat-green',
+        radioClass: 'iradio_square',
+        increaseArea: '20%' // optional
+      });
+
+    })
+
+  </script>
+{% endblock %}

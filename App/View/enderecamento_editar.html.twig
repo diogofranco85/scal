@@ -1,0 +1,248 @@
+{% extends 'page.html.twig' %}
+
+{% block css %}
+    {{ css('toastr') }}
+    {{ css('datatables') }}
+    <style>
+        tr.group{
+            background-color: #006C38 !important;
+            color: white;
+            width: 100% !important;
+        };
+        tr.group:hover {
+            text-decoration: underline;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="box-header">
+        <h3 class="box-title">Movimentação de amostra</h3>
+        <!-- <a href="#" class=" {{ btnnew }} pull-right btnnew"><i class="fa fa-plus"></i> Novo </a> -->
+        
+    </div>
+    <form id="form_estoque">
+    <div class="container-fluid">
+        <div class="box-body">
+        
+            <div class="row">
+                <div class="col-md-12 bg-green">
+                    <h3>Armazenamento Atual</h3>
+                </div>
+            </div>
+            <p>Dados da amostra já armazenada</p>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class='form-group'>
+                            <label for='cliente'>Cliente</label>
+                            <input type="text" value="{{estoqueAtual.nmcliente}}"  readonly class='form-control' name='cliente' id='cliente'>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class='form-group'>
+                            <label for='cliente'>Contrato</label>
+                            <input type="text" value="{{estoqueAtual.numcontrato}}"  readonly class='form-control' name='numcontrato' id='numcontrato'>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class='form-group'>
+                            <label for='cliente'>Hibrido</label>
+                            <input type="text" value="{{estoqueAtual.hibrido}}"  readonly class='form-control' name='hibrido' id='hibrido'>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class='form-group'>
+                            <label for='cliente'>Local</label>
+                            <input type="text" value="{{estoqueAtual.armazenamento}}"  readonly class='form-control' name='armazenamento' id='armazenamento'>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class='form-group'>
+                            <label for='cliente'>Peso no armazém</label>
+                            <input type="text" value="{{estoqueAtual.peso_armazem|number_format(3,'.',',')}}"  readonly class='form-control peso' name='peso_armazem' id='peso_armazem'>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class='form-group'>
+                            <label for='cliente'>Peso enviado para o cliente</label>
+                            <input type="text" value="{{estoqueAtual.peso_cliente|number_format(3,'.',',')}}"  readonly class='form-control peso' name='peso_cliente' id='peso_cliente'>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class='form-group'>
+                            <label for='cliente'>Peso enviado para descarte</label>
+                            <input type="text" value="{{estoqueAtual.peso_descarte|number_format(3,'.',',')}}"  readonly class='form-control peso' name='peso_descarte' id='peso_descarte'>
+                        </div>
+                    </div>
+                </div>
+            
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 bg-green">
+                <h3>Dados da Movimentação</h3>
+            </div>
+
+            <p>Informe os dados abaixo para realizar movimentação</p>
+
+
+            <input type="hidden" name="idetiqueta" id="idetiqueta" value="{{ estoqueAtual.idetiqueta }}" />
+            
+            <div class="row">
+                <div class="col-md-2">
+                    <div class='form-group'>
+                        <label for='cliente'>Peso no armazém</label>
+                        <input type="text" value="{{estoqueAtual.peso_armazem|number_format(3,'.',',')}}}}"  readonly class='form-control peso' name='mov_peso_armazem' id='mov_peso_armazem'>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class='form-group'>
+                        <label for='cliente'>Peso enviado para o cliente</label>
+                        <input type="text" value="0,000" class='form-control peso' name='mov_peso_cliente' id='mov_peso_cliente'>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class='form-group'>
+                        <label for='cliente'>Peso enviado para descarte</label>
+                        <input type="text" value="0,000" class='form-control peso' name='mov_peso_descarte' id='mov_peso_descarte'>
+                    </div>
+                </div>
+
+                <div class='col-md-1'>
+                    <div class='form-group'>
+                        <label for='operador'>Cód.Resp.</label>
+                        <input class='form-control' name='idoperador' id='idoperador' required >
+                        <span class="nameOperador"></span>
+                    </div>
+                </div>
+
+                <div class='col-md-3'>
+                    <div class='form-group'>
+                        <label for='operador'>Responsável</label>
+                        <input class='form-control' disabled name='operador' id='operador' required >
+                        <span class="nameOperador"></span>
+                    </div>
+                </div>
+
+                 <div class="col-md-2">
+                    <div class='form-group text-center'>
+                        <label for='operador'>Registrar a movimentação</label>
+                        <button type="submit" class="{{ btnsave }}"><i class="{{ iconsave }}"></i> Salvar</button>
+                    </div>
+                </div>
+
+            </div>
+
+           
+
+        </div>
+    </div>
+    </form> 
+
+
+{% endblock %}
+
+{% block js %}
+    {{ js('datatables') }}
+    {{ js('jquerymask') }}
+    {{ js('toastr') }}
+    <script>
+        $(document).ready(function(){
+
+            $('.peso').mask('#0,000',{ reverse: true });
+
+            $('#mov_peso_cliente').change(function(){
+              if(!calcPesoArmazem()){
+                  $('#mov_peso_cliente').focus();
+              };
+            })
+
+             $('#mov_peso_descarte').change(function(){
+              if(!calcPesoArmazem()){  
+                $('#mov_peso_descarte').focus();
+              };
+            })
+
+            function calcPesoArmazem(){
+
+                let pesoArmazem = $('#mov_peso_armazem').val();
+                let pesoCliente = $('#mov_peso_cliente').val();
+                let pesoDescarte = $('#mov_peso_descarte').val();
+
+                pesoArmazem2 = parseFloat(pesoArmazem.replace(',','.'));
+                pesoCliente2 = parseFloat(pesoCliente.replace(',','.'));
+                pesoDescarte2 = parseFloat(pesoDescarte.replace(',','.'));
+
+                let peso = pesoArmazem2 - ( pesoCliente2 + pesoDescarte2 );
+
+                if(peso < 0){
+                    toastr.warning('O peso não pode ser menor que zero','Movimentção', { progressBar: true, hideDuration: '5000'});
+
+                    return false;
+                }
+
+                $('#mov_peso_armazem').val(peso);
+            }
+
+
+            $('#form_estoque').submit(function(event){
+                event.preventDefault();
+
+                let pesoCliente = $('#mov_peso_cliente').val()
+                let pesoDescarte = $('#mov_peso_descarte').val()
+
+                if( pesoCliente === 0 && pesoDescarte === 0){
+                    toastr.error('O peso do cliente e descarte nao podem ser zero','Movimentção', { progressBar: true, hideDuration: '5000'});
+                    return;
+                }
+
+                $.ajax({
+                    url: '{{ url('/movimentacao/store') }}',
+                    method: 'post',
+                    data: $('#form_estoque').serialize(),
+                    dataType: 'json',
+                    success: function(data){
+                        console.log(data);
+                        if(data.code == 200){
+                            toastr.success(data.message,'Valorem SCAL', { positionClass: "toast-top-center",});
+                        let reload = setInterval(() => {
+                                window.location.href = "{{ url('/enderecamento')}}";
+                            }, 1000);
+                        }else{
+                            toastr.error(data.message,'Valorem SCAL', { positionClass: "toast-top-center",});
+                        }
+                    }                
+                })
+            })
+
+            $('#idoperador').bind('keyup keypress focus paste',function(e){
+                const cod = $(this).val();
+                
+                if(cod.length < 3 ){
+                    return;
+                }
+
+                verificarlogin();
+
+                $.get(`{{ url_base }}/operador/${cod}`, {cod}, (data) => {
+                        $('#operador').val(data.name);
+                });
+            })
+
+
+        })
+
+
+
+    </script>
+{% endblock %}

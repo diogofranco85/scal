@@ -1,0 +1,132 @@
+<input type="hidden" name="id" id="id" value="{{ amostra.id }}">
+<input type="hidden" name="idetiqueta" id="idetiqueta" value="{{ (idetiqueta) ? idetiqueta : amostra.idetiqueta }}">
+<div class='row'>
+    <div class='col-md-12'>
+        <div class='form-group'>
+            <label for='idcliente'>Nome cliente</label>
+            <select class='form-control' name='idcliente' id='idcliente' readonly="readonly">
+                <option selected="selected" value="{{ cliente.id }}" >{{ cliente.nome }}</option>
+            </select>
+        </div>
+    </div>
+
+</div>
+
+<div class='row'>
+    <div class='col-md-6'>
+        <div class='form-group'>
+            <label for='idcliente'>Numero do contrato</label>
+            <select class='form-control' name='idcontrato' id='idcontrato'  readonly="readonly">
+                <option value="{{ contrato.id }}" selected="selected" >{{ contrato.num}}</option>
+            </select>
+        </div>
+    </div>
+
+    <div class='col-md-6'>
+        <div class='form-group'>
+            <label for='hibrido'>Hibrido</label>
+            <input type="text" class="form-control" readonly="readonly" name="hibrido" id="hibrido" value="{{ contrato.hibrido }}"  readonly="readonly">
+        </div>
+    </div>
+
+</div>
+
+<div class='row'>
+    <div class='col-md-6'>
+        <div class='form-group'>
+            <label for='dtamostra'>Data da amostra</label>
+            <input type='date' class='form-control' name='dtamostra' id='dtamostra' required="required" value="{{  amostra.dtamostra|date("Y-m-d") }}"/>
+        </div>
+    </div>
+
+    <div class='col-md-6'>
+        <div class='form-group'>
+            <label for='peso'>Tipo da Amostra</label>
+            <select class='form-control' name='idtpamostra' id='idtpamostra' required="required">
+                {% for tp in tipoAmostras %}
+                <option value="{{ tp.id }}" {{ (tp.id == amostra.idtipoamostra ) ? 'selected="selected"' : '' }} >{{ tp.descricao }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+</div>
+
+<div class='row'>
+    <div class='col-md-2'>
+        <div class='form-group'>
+            <label for='idoperador'>Cod.Resp</label>
+            <input type='text' class='form-control' required name='idoperador' id='idoperador' value="{{ operador.id }}"/>
+        </div>
+    </div>
+
+    <div class='col-md-4'>
+        <div class='form-group'>
+            <label for='operador'>Resp.Recebimento</label>
+            <input type='text' class='form-control' readonly name='operador' id='operador' value="{{ operador.name }}"/>
+        </div>
+    </div>
+
+    <div class='col-md-2'>
+        <div class='form-group'>
+            <label for='idoperador'>Cod.Resp</label>
+            <input type='text' class='form-control' required name='entidoperador' id='entidoperador' value="{{ operador.id }}"/>
+        </div>
+    </div>
+
+    <div class='col-md-4'>
+        <div class='form-group'>
+            <label for='operador'>Resp.Entrega</label>
+            <input type='text' class='form-control' readonly name='entoperador' id='entoperador' value="{{ operador.name }}"/>
+        </div>
+    </div>
+</div>
+
+<div class='row'>
+    <div class='col-md-12'>
+        <div class='form-group'>
+            <label for='protocolo'>Protocolo</label>
+            <input type='text' class='form-control' name='protocolo' id='protocolo' value="{{ amostra.protocolo }}"/>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class='col-md-12'>
+        <div class='form-group'>
+            <label for='observacao'>Observações</label>
+            <textarea class='form-control' name='observacao' id='observacao' value="{{ amostra.observacao }}" placeholder="inserir observações e outras informações aqui" rows="6"></textarea
+        </div>
+    </div>
+</div>
+
+{{ js('jquerymask') }}
+
+<script>
+        $('#cnpj').mask('##.###.###/####-##');
+        $('#peso').mask('00.000',{ reverse: false });
+
+          $('#idoperador').bind('keyup keypress focus paste',function(e){
+                const cod = $(this).val();
+                
+                if(cod.length < 3 ){
+                    return;
+                }
+
+                $.get(`{{ url_base }}/operador/${cod}`, {cod}, (data) => {
+                    $('#operador').val(data.name);
+                });
+            })
+
+            $('#entidoperador').bind('keyup keypress focus paste',function(e){
+                const cod = $(this).val();
+                
+                if(cod.length < 3 ){
+                    return;
+                }
+
+                $.get(`{{ url_base }}/operador/${cod}`, {cod}, (data) => {
+                    $('#entoperador').val(data.name);
+                });
+            })
+</script>

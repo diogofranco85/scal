@@ -1,0 +1,21 @@
+{% extends 'page.html.twig' %}
+
+{% block css %}
+  {{ css('datatables') }}
+{% endblock %}
+
+{% block content %}
+<div class="box-header">
+  <h3 class="box-title">LOGS de erros no model</h3>
+</div>
+<hr>
+<div class="" >
+  {{ logsmodel | raw }}
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+ 
+{% endblock %}
