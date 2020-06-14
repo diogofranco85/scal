@@ -1,4 +1,4 @@
-vendor/*
-.vscode/*
-log/*
-public/*
+vendor/
+.vscode/
+log/
+public/
