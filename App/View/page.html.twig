@@ -266,17 +266,178 @@
 <script src="{{ url_base }}/Assets/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
 <script src="{{ url_base }}/Assets/bower_components/fastclick/lib/fastclick.js"></script>
 <script src="{{ url_base }}/Assets/vendors/adminlte/js/adminlte.min.js"></script>
+{{ js('axios') }}
+{{ js('bootbox') }}
 <script>
-  const verificarlogin = () => {
-     $.get({
-       url: '{{ url('/verficarlogin') }}',
-       success: function(data){
-            if(data.logged == false){
-              alert('Seu acesso foi desconectado por inatividade no sistema');
-               window.location.href = '{{ url('/') }}';
-            }
+
+  const api = axios.create({
+    baseURL: '{{ url_base }}'
+  })
+
+  const iconInfo = '<i class="fa fa-info-circle fa-4x text-info"></i>';
+  const iconQuestion = '<i class="fa fa-question-circle fa-4x text-primary"></i>';
+  const iconExclamation = '<i class="fa fa-exclamation-triangle fa-4x text-success"></i>';
+
+  requestError = (message) => {
+    bootbox.alert({
+            title: 'Error ao processar requisicao',
+            message: `
+              <div class="row">
+                <div class="col-md-2">
+                  <i class="ion ion-social-snapchat text-danger" style="font-size: 48px; color=red"></i>
+                </div>
+                <div class="col-md-10 text-danger"><h5>${message}</h5></div>
+              </div>`,
+          })
+  }
+
+  //SALVAR NOVO REGISTRO
+  const handleStore = async (event, url, form, modal = '#formmodal') => {
+    
+    event.preventDefault();
+    try{
+      verificarlogin();
+      SerializeData = $(form).serializeArray();
+      var formData = {};
+      SerializeData.map( (arrayData, index ) => {
+        const {name, value } = arrayData;
+        formData[name] = value;
+      })
+      
+      const response = await api.post(url, formData);
+      
+      const {data} = response;
+      
+      console.log(data);
+
+      bootbox.alert({
+        title: '<h4>NOVO REGISTRO</h4>',
+        message: `
+          <div class="row">
+            <div class="col-md-4">${data.status === 200 ? iconInfo : iconExclamation }</div>
+            <div class="col-md-8"><h5>${data.message}</h5></div>
+          </div>`,
+        onHide: () => {
+          if(data.status === 200){
+            location.reload(true);
+          }
         }
-       });
+      });
+    }catch(err){
+      requestError(err);
+    }
+  }
+    
+
+  //EXCLUSAO DE REGISTRO
+  // params
+  // @url String
+  // @id Int
+  const handleDelete =  (event, url, id) => {
+    event.preventDefault();
+    try{   
+      verificarlogin();
+
+      bootbox.confirm({
+        message: `
+          <div class='row'>
+            <div class="col-md-2">
+              ${iconQuestion}
+            </div>
+            <div class='col-md-10'>
+              <h5>Deseja excluir esse registro</h5>
+            </div>
+          </div>`,
+        title: '<h4>EXCLUSÃO DE REGISTRO</h4>',
+        buttons:{
+            confirm:{
+              label: 'Sim',
+              className: 'btn-success',
+            },
+            cancel:{
+              label: 'Não',
+              className: 'btn-danger',
+            }
+        },
+        callback: async function(result){
+          if(result){
+            const response = await api.delete(url, { 
+              data: {id},
+            })
+
+            if(!response){
+                requestError(response.data.message);
+                return;
+            }
+
+            const { data } = response;
+
+            bootbox.alert({
+              title: data.status == '200' ? '<h4>EXCLUSÃO DE REGISTRO</h4>' : '<h4>ERROR AO EXCLUIR</h4>',
+              message: `
+                <div class='row'>
+                  <div class="col-md-2">
+                    <span>${iconInfo}</span>
+                  </div>
+                  <div class='col-md-10 align-middle'>
+                    <h5>${data.message}</h5>
+                  </div>
+                </div>`,
+              onHide: () => {
+                console.log(data.status);
+                if(data.status == '200'){
+                  location.reload(true);
+                }
+              }  
+            });
+
+          }
+        }
+      })
+    }catch(err){
+      requestError(err);
+    }
+  }
+
+  const handleEdit = async (event, url, id) => {
+      event.preventDefault();
+      try{
+        verificarlogin();
+        const response = await api.put(`${url}/${id}`);
+
+        if(!response){
+          requestError('Houve um error ao processar a requisição');
+          return;
+        }
+
+        return response.data;
+      }catch(err){
+        requestError(err);
+      }
+  }
+
+  const handleNew = async () => {
+    
+  }
+
+  const verificarlogin = async () => {
+    const response = await api.get('verficarlogin');
+
+    if(!response){
+      bootbox.alert('Não foi possivel verificar se o usuário está logado');
+      return;
+    }
+
+    const { data } = response;
+    if(data.logged == false){
+        bootbox.alert({
+        title: 'Usuário desconectado',
+        message:'Seu acesso foi desconectado por inatividade no sistema',
+        onHide: () => {
+            window.location.href = '{{ url('/') }}';
+        }
+      })
+    }
   }
 </script>
 {% block js %}{% endblock %}

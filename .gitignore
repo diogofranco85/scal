@@ -1,5 +1,6 @@
+# ignore files
 **/.vscode/
 **/public/
-**/Log/
+**/Log/*.html
 **/vendor/
-**/.env
+.env

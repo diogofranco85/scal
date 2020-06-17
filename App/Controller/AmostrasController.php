@@ -21,32 +21,14 @@ class AmostrasController extends MY_Controller
 
     public function index(){
 
-       $colunas =  'lab_amostra.id, lab_amostra.protocolo, lab_amostra.dtamostra, lab_amostra.peso, lab_amostra.observacao, lab_tipoamostra.descricao as "TPDesc", lab_cliente.nmcliente,  lab_amostra.created_at as "amostra_created_at", ';
-       $colunas .= ' lab_contrato.hibrido, lab_contrato.numcontrato, lab_safra.descricao as "safra"';
-       $colunas .= ' ,lab_operador.name, lab_etiquetas.id as idetiqueta, lab_etiquetas.setor';
-
       Transaction::open('valorem');
-      $amostras = new AmostrasModel();
-      $amostras->fillable($colunas);
-      $amostras->innerJoin('lab_contrato', 'id','idcontrato');
-      $amostras->innerJoin('lab_etiquetas', 'id','numetiqueta');
-      $amostras->innerJoin('lab_cliente','id','idcliente','lab_contrato');
-      $amostras->innerJoin('lab_safra','id','idsafra','lab_contrato');
-      $amostras->innerJoin('lab_tipoamostra','id', 'idtipoamostra');
-      $amostras->innerJoin('lab_operador','id', 'idoperador','lab_amostra');
-      $amostras->where('lab_amostra.ativo','=','S');
-      $amostras->where('lab_contrato.finalizado','=','N'); //contrato nao pode estar finalizado
-
-      $rsAmostras = $amostras->get();
-
-      //__d($rsAmostras);
-
-      $this->userData('grids', $rsAmostras);
+       $amostras = new AmostrasModel();
+      Transaction::close();
+     
+      $this->userData('grids', $amostras->query_index());
       $this->userData('page_title','Amostras');
 
       $this->render('amostras_index');
-      Transaction::close();
-
     }
 
     public function loadfields(){
@@ -216,27 +198,31 @@ class AmostrasController extends MY_Controller
        try{
            Transaction::open('valorem');
 
-           $idamostra = $this->request->request->get('idamostra');
-           $teste = TesteModel::all("idamostra = {$idamostra}");
-           $contarTeste = count($teste);
+          $idamostra = $this->input->delete('id');
+
+          $teste = new TesteModel();
+          $teste->fillable('id');
+          $teste->where('idamostra','=',$idamostra);
+          $rs_teste = $teste->get();
+
+           $contarTeste = count($rs_teste);
 
            if($contarTeste > 0){
-               $json = [ 'code' => '400', 'message' => 'Já possui teste cadastrado para essa amostra'];
+               $json = ['status' => 400,'message' => 'Já possui teste cadastrado para essa amostra'];
+               $this->jsonResponse($json);
            }else{
                $amostra = AmostrasModel::find($idamostra);
                $amostra->ativo = 'N';
                $amostra->update();
 
-               $json = [ 'code' => '200', 'message' => 'Amostra excluida com sucesso'];
+               $json = ['status' => 200,'message' => 'Amostra excluida com sucesso'];
+               $this->jsonResponse($json);
         }
-
-
            Transaction::close();
        }catch(\Exception $e){
            Transaction::rollback();
-           $json = [ 'code' => '400', 'message' => $e->getMessage()];
+           $json = [ 'status' => 500,'message' => $e->getMessage()];
+           $this->jsonResponse($json);
        }
-
-       echo json_encode($json);
     }
 }

@@ -82,7 +82,8 @@ class SimController extends Controller{
     }
 
     public function verificarLogin(){
-            $this->jsonResponse(['logged' => $this->session->logged]);
+            $logged = $this->session->logged;
+            $this->jsonResponse(['logged' => $logged ? 1 : 0]);
     }
 
 }

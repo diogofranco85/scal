@@ -34,7 +34,7 @@ route::get('/cliente','ClienteController@index');
 route::post('cliente/validate/cnpj','ClienteController@cnpj');
 route::post('/cliente/data','ClienteController@edit');
 route::post('/cliente/json','JsonController@gridCliente');
-route::post('/cliente/store','ClienteController@save');
+route::post('/cliente','ClienteController@save');
 route::delete('/cliente/delete','ClienteController@delete');
 route::get('/cliente/csv','ClienteController@csv');
 /*************************
@@ -45,7 +45,7 @@ route::get('/json-amostras-contratos/{id}','AmostrasController@loadContrato');
 route::post('/amostra/read/codebar','AmostrasController@loadfields');
 route::post('/amostra/store', 'AmostrasController@save');
 route::post('/amostra/edit','AmostrasController@edit');
-route::post('/amostra/delete','AmostrasController@delete');
+route::delete('/amostra','AmostrasController@delete');
 /*************************
  * Tipo de Amostras
  **************************/
@@ -109,11 +109,17 @@ route::post('/movimentacao/store', 'EnderecamentoController@storeMovimentacao');
 
 route::get('/perfil', 'PerfilController@index');
 
+/*************************
+ * safra
+ **************************/
 route::get('/safra','SafraController@index');
 route::post('/safra', 'SafraController@store');
-route::put('/safra', 'SafraController@update');
+route::put('/safra/{id}', 'SafraController@update');
+route::delete('/safra', 'SafraController@delete');
 
-
+/*************************
+ * Relatorios
+ **************************/
 route::get('/relatorios','RelatoriosController@index');
 route::get('/relatorio/rastreabilidade/{idetiqueta}','RelatoriosController@rastreabilidade');
 /*************************

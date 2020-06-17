@@ -37,7 +37,11 @@ $html['js'] = [
 
   'validate' => 'plugins/validate/jquery.validate.min.js',
 
-  'icheck' => 'plugins/iCheck/icheck.min.js'
+  'icheck' => 'plugins/iCheck/icheck.min.js',
+  
+  'bootbox' => 'plugins/bootbox/bootbox.all.js',
+
+  'axios' => 'js/axios.min.js',
 ];
 
 $html['css'] = [

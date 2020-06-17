@@ -254,11 +254,14 @@ class Model{
             $this->object['updated_at'] = date('Y-m-d h:m:s');
         }
 
+
         foreach($this->object as $key => $value)
         {
             if($key != $this->primarykey){
                 if(is_numeric($value)){
                     $set .= " {$key} = $value,";
+                }elseif( is_null($value)){
+                    $set .= " {$key} = NULL,";
                 }else{
                     $set .= " {$key} = '$value',";
                 }
@@ -321,8 +324,6 @@ class Model{
             $tablename = $table;
             $alias = $table;
         };
-
-       
 
         if(is_null($table_reference))
         {

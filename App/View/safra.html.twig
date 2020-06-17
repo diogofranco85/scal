@@ -9,7 +9,7 @@
 {% block content %}
 <div class="box-header">
   <h3 class="box-title">Cadastramento de safra</h3>
-  <button type="button" id="btnnew" class="{{ btnnew }} pull-right"><i class="{{ iconnew }}"></i> Novo</button>
+  <button type="button" onClick="onNew();" class="{{ btnnew }} pull-right"><i class="{{ iconnew }}"></i> Novo</button>
 </div>
 <table class="table table-bordered table-striped dataTable" id="grid" data-page-length='100'>
   <thead>
@@ -30,9 +30,19 @@
                 </td>
                 <td>
                     <div class="btn-group">
-                        <a href="#" post_id="{{ data.id }}" post_info="{{ data.descricao }}" class="{{ btnedit }} btnedit">
-                            <i class="{{ iconedit }}"></i> Editar
-                        </a>
+                        <button  type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-th"></i> Ação</button>
+                        <ul class="dropdown-menu pull-left">
+                              <li>
+                                  <a href="#" onclick="onEdit(event, {{ data.id }})">
+                                      <i class="{{ iconedit }}"></i> Editar
+                                  </a>
+                              </li>
+                              <li>
+                                  <a href="#" onClick="handleDelete(event,'safra', {{ data.id }});">
+                                      <i class="{{ iconexc }}"></i> Excluir
+                                  </a>
+                              </li>
+                        </ul>
                     </div>
                 </td>
             </tr>
@@ -41,7 +51,7 @@
 </table>
 
 <!-- modal -->
-<form action="#" method="post" class="form" id="frm">
+<form class='form' action='{{ url_base }}/safra' id="formSafra" method='post'>
 <div class="modal fade" tabindex="-1" role="dialog" id="formmodal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -50,17 +60,17 @@
         <h4 class="modal-title">Safra</h4>
       </div>
       <div class="modal-body">
-          <form class='form' action='{{ url_base }}/safra' method='post'>
+          
               <input type="hidden" name="id" id="id"/>
               <div class="form-group">
                   <label for='descricao'>Descrição</label>
                   <input type='text' class='form-control' name='descricao' id='descricao' required/>
               </div>
-          </form>
+        
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-sign-out fa-fw"></i> Fechar</button>
-        <button type="submit" id="btnsave" class="btn btn-primary"><i class="fa fa-save fa-fw"></i> Salvar</button>
+        <button type="submit" href="#" id="btnsave" class="btn btn-primary"><i class="fa fa-save fa-fw"></i> Salvar</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
@@ -77,6 +87,35 @@
   {{ js('icheck') }}
 
   <script>
+
+    const onNew = () => {
+        document.querySelector('#id').value = ''; 
+        document.querySelector('#formSafra').reset();
+        $('#formmodal').modal();
+    }
+
+    const onEdit = (event, id) => {
+      handleEdit(event, 'safra', id )
+      .then( (response) => {
+          const {descricao, id} = response.result;
+          document.querySelector('#id').value = id;
+          document.querySelector('#descricao').value = descricao;
+          $('#formmodal').modal();
+      });
+    }
+    
+    const form = document.querySelector('#formSafra');
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      if(document.querySelector('#descricao').value == ''){
+        bootbox.alert('Descrição não pode ficar em branco');
+        return;
+      }
+
+      handleStore(event, 'safra', '#formSafra');
+    })
+   
     $(document).ready(function(){
        
        var table = $('#grid').DataTable({
@@ -84,67 +123,17 @@
           language: {
             url: '{{ assets('bower_components/datatables.net/js/Portuguese-Brasil.json') }}'
           }
-        });
+      });
 
-      $("#frm").validate();
-
-      $('#btnnew').click(() => {
-        $('#formmodal').modal()
-        $('#id').val('');
-        $('#descricao').val('');
-      })
-
-      $('body').on('click','.btnedit',function(e){
-        let idform = $(this).attr('post_id'); 
-        let desform = $(this).attr('post_info'); 
-        $('#id').val(idform);
-        $('#descricao').val(desform);
-        $('#formmodal').modal();
-      })
-
-      $("#frm").submit((e) => {
-        e.preventDefault();
-
-        const id = $('#id').val();
-
-        if(id === ''){
-          var envtype = 'POST';
-          var envdata = { descricao: $('#descricao').val() }
-        }else{
-          var envtype = 'PUT';
-          var envdata = { 
-            id: $('#id').val(),
-            descricao: $('#descricao').val() ,
-            };
-        }
-
-        $.ajax({
-            url: $('#frm').attr('action'),
-            data: envdata,
-            type: envtype,
-            dataType: 'JSON',
-            success: function(response){
-                if(response.code === 200){
-                  toastr.success(response.message, 'Valorem SCAL', {"closeButton": true});
-                        let reload = setInterval(() => {
-                            location.reload(true);
-                        }, 1000);
-                }else{
-                   toastr.error(response.message, 'Valorem SCAL', { "closeButton": true});
-                }
-            }
-        });
-
-        return false;
-      })
-
-       $('input').iCheck({
+      $('input').iCheck({
         checkboxClass: 'icheckbox_flat-green',
         radioClass: 'iradio_square',
         increaseArea: '20%' // optional
       });
 
     })
+
+    
 
   </script>
 {% endblock %}

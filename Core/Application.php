@@ -14,8 +14,6 @@
                $whoops = new \Whoops\Run;
                $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
                $whoops->register();
-
-               print "<script> console.log('Ambiente de desenvolvimento')</script>";
             }else{
                 $SentryConfig = array('dsn' => getenv('SENTRY_DSN'));
                 Sentry\init($SentryConfig);
@@ -24,6 +22,8 @@
             date_default_timezone_set('America/Sao_Paulo');
             require_once( ROOT.DS.'App'.DS.'Config'.DS.'Routes.php');
         }
+
+       
 
         public static function setConfig($key, $value){
             self::$config[$key] = $value;

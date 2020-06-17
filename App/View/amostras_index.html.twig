@@ -46,8 +46,13 @@
             <td>{{ grid.amostra_created_at|date('d/m/y h:i')}}</td>
             <td>
                 <div class="btn-group">
-                    <a href="#" post_id="{{ grid.id }}" class="{{ btnedit }} btnedit"><i class="{{ iconedit }}"></i> Editar</a>
-                    <a href="#" post_id="{{ grid.id }}" class="{{ btnexc }} btndel"><i class="{{ iconexc }}"></i> Excluir</a>
+                    <a href="#" post_id="{{ grid.id }}" class="{{ btnedit }} btnedit">
+                      <i class="{{ iconedit }}"></i> Editar
+                    </a>
+                    
+                    <a href="#" post_id="{{ grid.id }}" class="{{ btnexc }}" onClick="handleDelete(event,'amostra',{{ grid.id }})">
+                      <i class="{{ iconexc }}"></i> Excluir
+                    </a>
                 </div>
             </td>
         </tr>
@@ -99,8 +104,7 @@
   {{ js('datatables') }}
   {{ js('validate') }}
   {{ js('toastr') }}
-
-
+ 
 
   <script>
     $(document).ready(function(){
@@ -184,26 +188,29 @@
           }
       })
 
-
-       $('.btndel').click(function(event){
-           verificarlogin();
-
-           let idamostra = $(this).attr('post_id');
-           $.ajax({
-               url: '{{ url("/amostra/delete") }}',
-               data: { idamostra },
-               dataType: 'json',
-               method: 'post',
-               success: function(data){
-                   alert(data.message);
-                   if(data.code == 200){
-                       location.reload(true);
-                   }
-               }
-           })
+      /*
+       $('a.btndel').click(function(event){
+          event.preventDefault();
+          console.log(this);
+          verificarlogin();
+          bootbox.confirm('Deseja realmente excluir esse registro', function(result){
+              let idamostra = $(this).attr('post_id');
+              $.ajax({
+                  url: '{{ url("/amostra/delete") }}',
+                  data: { idamostra },
+                  dataType: 'json',
+                  method: 'post',
+                  success: function(data){
+                      alert(data.message);
+                      if(data.code == 200){
+                          location.reload(true);
+                      }
+                  } //success 
+              }) //ajax
+          }) //bootbox 
        })
 
-     
+        */
 
        function fncLoadField(){
             verificarlogin();

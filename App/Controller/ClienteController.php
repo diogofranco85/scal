@@ -38,38 +38,58 @@ class ClienteController extends MY_Controller
 
     public function save()
     {
-        Transaction::open('valorem');
-        $id = $this->request->request->get('id');
-        $usuario = $this->session->usuario;
-        if($id == ''){
-
-          $clientes = new ClientesModel();
-          $clientes->nmcliente = \strtoupper($this->request->request->get('nmcliente'));
-          $clientes->descricao = \strtoupper($this->request->request->get('descricao'));
-          $clientes->created_at = date('Y-m-d h:m:s');
-          $clientes->created_id = $usuario['idUsuario'];
-          $clientes->create();
-
-        }else{
-
-          $clientes = ClientesModel::find($id);
-          $clientes->nmcliente =  \strtoupper($this->request->request->get('nmcliente'));
-          $clientes->descricao = \strtoupper($this->request->request->get('descricao'));
-          $clientes->updated_at = date('Y-m-d h:m:s');
-          $clientes->updated_id = $usuario['idUsuario'];
-          $clientes->update();
+        try{
+          Transaction::open('valorem');
           
-        }
-        Transaction::close();
+          $verificaCliente = new ClientesModel();
+          $verificaCliente->where('nmcliente','=', $this->input->body('nmcliente'));
+          $verificaCliente->where('ativo','=', 'S');
+          $rs_verificaCliente = $verificaCliente->get();
 
-        echo json_encode(array('retorno' => 200));
+          if(count($rs_verificaCliente) > 0){
+            $this->jsonResponse(['status' => '400', 'message' => 'Cliente já existe na banco' ]);
+            return;
+          }
+
+
+          $id = $this->input->body('id');
+
+          $usuario = $this->session->usuario;
+          if($id == ''){
+
+            $clientes = new ClientesModel();
+            $clientes->nmcliente = $this->input->body('nmcliente');
+            $clientes->descricao = $this->input->body('descricao');
+            $clientes->created_at = date('Y-m-d h:m:s');
+            $clientes->created_id = $usuario['idUsuario'];
+            $clientes->create();
+
+          }else{
+
+            $clientes = ClientesModel::find($id);
+            $clientes->nmcliente = $this->input->body('nmcliente');
+            $clientes->descricao = $this->input->body('descricao');
+            $clientes->updated_at = date('Y-m-d h:m:s');
+            $clientes->updated_id = $usuario['idUsuario'];
+            $clientes->update();
+            
+          }
+          Transaction::close();
+          
+          $this->jsonResponse(['status' => '200', 'message' => 'Cliente adicionando com sucesso' ]);
+
+        }catch(Exception $e){
+            $this->jsonResponse(['status' => '500', 'message' => $e->getMessage() ], 500);
+        }
+
+        
     }
 
     public function delete()
     {
         try{
             Transaction::open('valorem');
-            $id = $this->request->request->get('idcliente');
+            $id = $this->input->delete('id');
 
             //verificar se existe contrato para esse cliente
             // se existe retorna codigo 400 senao retorna codigo 200
@@ -82,22 +102,22 @@ class ClienteController extends MY_Controller
 
             if($contarContratosAtivos > 0)
             {
-                $json = [ 'code ' => '400','message' => "{$cliente->nmcliente}<br> possui contratos ativos no sistema"];
+                $json = [ 'status' => 400,'message' => "O cliente <strong>{$cliente->nmcliente}</strong> <br> possui contratos ativos no sistema"];
             }else{
                 $cliente = ClientesModel::find($id);
                 $cliente->ativo = 'N';
                 $cliente->update();
                 Transaction::close();
-                $json = array('code' => '200', 'message' => $cliente->nmcliente . '<br>Excluindo cliente ... <i class="fa fa-spinner fa-spin"></i>');
+                $json = array('status' => 200, 'message' => "<strong> $cliente->nmcliente</strong> <br>Cliente excluido com sucesso");
             }
 
 
         }catch (\Exception $e){
             Transaction::rollback();
-            $json = array('code' => '500', 'message' => 'Houve um erro no sistema <br>' . $e->getMessage());
+            $json = array('status' => '500', 'message' => 'Houve um erro no sistema <br>' . $e->getMessage());
         }
 
-        echo json_encode($json);
+        $this->jsonResponse($json);
 
     }
 

@@ -166,3 +166,87 @@
 <b>14/06/2020 11:31:12</b> <br> 
 <i>Model:App\Model\EtiquetasModel <br> Erro ao consultar: SQLSTATE[42000]: Syntax error or access violation: 1055 Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'valorem_scal2.lab_cliente.id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by<br> <b>SQL:</b><span style='color: red'>SELECT  lab_cliente.id as "idcliente",  lab_cliente.nmcliente,  lab_cliente.descricao,  lab_contrato.id as "idcontrato",  lab_contrato.numcontrato,  lab_contrato.hibrido,  lab_etiquetas.ativo FROM lab_etiquetas  INNER JOIN lab_cliente  ON lab_cliente.id = lab_etiquetas.idcliente  INNER JOIN lab_contrato  ON lab_contrato.id = lab_etiquetas.idcontrato   WHERE lab_etiquetas.ativo = 'S' GROUP BY lab_contrato.id, lab_contrato.hibrido  LIMIT 0,1000 </span></i> <br> 
 </p> <hr> 
+<p> 
+<b>14/06/2020 13:45:54</b> <br> 
+<i>Model:App\Model\TesteModel <br> Erro ao buscar registro por ID: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1<br> <b>SQL:</b><span style='color: red'>SELECT * FROM lab_teste WHERE idamostra = </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>14/06/2020 13:45:57</b> <br> 
+<i>Model:App\Model\TesteModel <br> Erro ao buscar registro por ID: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1<br> <b>SQL:</b><span style='color: red'>SELECT * FROM lab_teste WHERE idamostra = </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>14/06/2020 17:17:54</b> <br> 
+<i>Model:App\Model\TesteModel <br> Erro ao buscar registro por ID: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1<br> <b>SQL:</b><span style='color: red'>SELECT * FROM lab_teste WHERE idamostra = </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>14/06/2020 17:18:54</b> <br> 
+<i>Model:App\Model\TesteModel <br> Erro ao buscar registro por ID: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1<br> <b>SQL:</b><span style='color: red'>SELECT * FROM lab_teste WHERE idamostra = </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>14/06/2020 17:21:48</b> <br> 
+<i>Model:App\Model\TesteModel <br> Erro ao buscar registro por ID: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1<br> <b>SQL:</b><span style='color: red'>SELECT * FROM lab_teste WHERE idamostra = </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>14/06/2020 17:22:53</b> <br> 
+<i>Model:App\Model\TesteModel <br> Erro ao buscar registro por ID: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1<br> <b>SQL:</b><span style='color: red'>SELECT * FROM lab_teste WHERE idamostra = </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>14/06/2020 18:25:04</b> <br> 
+<i>Model:App\Model\AmostrasModel <br> Erro ao atualizar dados: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'peso' at row 1<br> <b>SQL:</b><span style='color: red'>UPDATE lab_amostra SET  idcontrato = 8, numetiqueta = 15, dtamostra = '2020-05-25 03:00:00', idtipoamostra = 1, idoperador = 2, idoperadorentrega = 1, peso = '', protocolo = 'N/A', observacao = 'TESTE ', ativo = 'N', finalizado = 'N', campo = '', valor_campo = '', created_at = '2020-05-25 19:34:54', updated_at = '2020-05-25 19:34:54', deleted_at = '' WHERE id = 10</span></i> <br> 
+</p> <hr> 
+<p> 
+<b>14/06/2020 18:31:47</b> <br> 
+<i>Model:App\Model\TesteModel <br> Erro ao consultar: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ',id = 10   LIMIT 0,1000' at line 1<br> <b>SQL:</b><span style='color: red'>SELECT 1 FROM lab_teste  WHERE idamostra,id = 10   LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>14/06/2020 18:35:44</b> <br> 
+<i>Model:App\Model\AmostrasModel <br> Erro ao atualizar dados: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'peso' at row 1<br> <b>SQL:</b><span style='color: red'>UPDATE lab_amostra SET  idcontrato = 8, numetiqueta = 15, dtamostra = '2020-05-25 03:00:00', idtipoamostra = 1, idoperador = 2, idoperadorentrega = 1, peso = '', protocolo = 'N/A', observacao = 'TESTE ', ativo = 'N', finalizado = 'N', campo = '', valor_campo = '', created_at = '2020-05-25 19:34:54', updated_at = '2020-05-25 19:34:54', deleted_at = '' WHERE id = 10</span></i> <br> 
+</p> <hr> 
+<p> 
+<b>14/06/2020 18:38:31</b> <br> 
+<i>Model:App\Model\AmostrasModel <br> Erro ao atualizar dados: SQLSTATE[HY000]: General error: 1366 Incorrect integer value: '' for column 'campo' at row 1<br> <b>SQL:</b><span style='color: red'>UPDATE lab_amostra SET  idcontrato = 8, numetiqueta = 15, dtamostra = '2020-05-25 03:00:00', idtipoamostra = 1, idoperador = 2, idoperadorentrega = 1, protocolo = 'N/A', observacao = 'TESTE ', ativo = 'N', finalizado = 'N', campo = '', valor_campo = '', created_at = '2020-05-25 19:34:54', updated_at = '2020-05-25 19:34:54', deleted_at = '' WHERE id = 10</span></i> <br> 
+</p> <hr> 
+<p> 
+<b>14/06/2020 18:40:51</b> <br> 
+<i>Model:App\Model\AmostrasModel <br> Erro ao atualizar dados: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'IS NULL, valor_campo IS NULL, created_at = '2020-05-25 19:34:54', updated_at = '' at line 1<br> <b>SQL:</b><span style='color: red'>UPDATE lab_amostra SET  idcontrato = 8, numetiqueta = 15, dtamostra = '2020-05-25 03:00:00', idtipoamostra = 1, idoperador = 2, idoperadorentrega = 1, protocolo = 'N/A', observacao = 'TESTE ', ativo = 'N', finalizado = 'N', campo IS NULL, valor_campo IS NULL, created_at = '2020-05-25 19:34:54', updated_at = '2020-05-25 19:34:54', deleted_at IS NULL WHERE id = 10</span></i> <br> 
+</p> <hr> 
+<p> 
+<b>14/06/2020 18:42:38</b> <br> 
+<i>Model:App\Model\AmostrasModel <br> Erro ao consultar: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'lab_amostra.peso' in 'field list'<br> <b>SQL:</b><span style='color: red'>SELECT lab_amostra.id, lab_amostra.protocolo, lab_amostra.dtamostra, lab_amostra.peso, lab_amostra.observacao, lab_tipoamostra.descricao as "TPDesc", lab_cliente.nmcliente,  lab_amostra.created_at as "amostra_created_at",  lab_contrato.hibrido, lab_contrato.numcontrato, lab_safra.descricao as "safra" ,lab_operador.name, lab_etiquetas.id as idetiqueta, lab_etiquetas.setor FROM lab_amostra  INNER JOIN lab_contrato  ON lab_contrato.id = lab_amostra.idcontrato  INNER JOIN lab_etiquetas  ON lab_etiquetas.id = lab_amostra.numetiqueta  INNER JOIN lab_cliente  ON lab_cliente.id = lab_contrato.idcliente  INNER JOIN lab_safra  ON lab_safra.id = lab_contrato.idsafra  INNER JOIN lab_tipoamostra  ON lab_tipoamostra.id = lab_amostra.idtipoamostra  INNER JOIN lab_operador  ON lab_operador.id = lab_amostra.idoperador  WHERE  lab_amostra.ativo = 'S' AND  lab_contrato.finalizado = 'N'   LIMIT 0,1000 </span></i> <br> 
+</p> <hr> 
+<p> 
+<b>14/06/2020 20:12:58</b> <br> 
+<i>Model:App\Model\ContratosModel <br> Erro ao buscar registro por ID: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'AND ativo='S'' at line 1<br> <b>SQL:</b><span style='color: red'>SELECT * FROM lab_contrato WHERE idcliente =  AND ativo='S'</span></i> <br> 
+</p> <hr> 
+<p> 
+<b>14/06/2020 20:13:35</b> <br> 
+<i>Model:App\Model\ContratosModel <br> Erro ao buscar registro por ID: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'AND ativo='S'' at line 1<br> <b>SQL:</b><span style='color: red'>SELECT * FROM lab_contrato WHERE idcliente =  AND ativo='S'</span></i> <br> 
+</p> <hr> 
+<p> 
+<b>14/06/2020 20:24:27</b> <br> 
+<i>Model:App\Model\ClientesModel <br> Erro ao buscar registro por ID: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'numcliente' in 'field list'<br> <b>SQL:</b><span style='color: red'>SELECT id,nmcliente,numcliente, descricao ,codprotheus FROM lab_cliente WHERE id = 1</span></i> <br> 
+</p> <hr> 
+<p> 
+<b>14/06/2020 21:41:04</b> <br> 
+<i>Model:App\Model\ClientesModel <br> Erro ao atualizar dados: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'nmcliente' cannot be null<br> <b>SQL:</b><span style='color: red'>UPDATE lab_cliente SET  nmcliente = NULL, descricao = NULL, ativo = 'N', created_id = 3, created_at = '2020-06-14 09:06:19', updated_id = NULL, updated_at = '2020-06-14 21:40:19' WHERE id = 5</span></i> <br> 
+</p> <hr> 
+<p> 
+<b>15/06/2020 07:40:43</b> <br> 
+<i>Model:App\Model\ClientesModel <br> Erro ao atualizar dados: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'nmcliente' cannot be null<br> <b>SQL:</b><span style='color: red'>UPDATE lab_cliente SET  nmcliente = NULL, descricao = NULL, ativo = 'N', created_id = 3, created_at = '2020-06-14 10:06:00', updated_id = NULL, updated_at = '2020-06-14 22:14:00' WHERE id = 6</span></i> <br> 
+</p> <hr> 
+<p> 
+<b>15/06/2020 07:40:47</b> <br> 
+<i>Model:App\Model\ClientesModel <br> Erro ao atualizar dados: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'nmcliente' cannot be null<br> <b>SQL:</b><span style='color: red'>UPDATE lab_cliente SET  nmcliente = NULL, descricao = NULL, ativo = 'N', created_id = 3, created_at = '2020-06-14 09:06:19', updated_id = NULL, updated_at = '2020-06-14 21:40:19' WHERE id = 5</span></i> <br> 
+</p> <hr> 
+<p> 
+<b>16/06/2020 13:53:22</b> <br> 
+<i>Model:App\Model\ClientesModel <br> Erro ao gravar dados: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'DIOGO FRANCO' for key 'lab_cliente.nmcliente'<br> <b>SQL:</b><span style='color: red'>INSERT INTO lab_cliente ( nmcliente, descricao, created_at, created_id) VALUES ( 'DIOGO FRANCO', 'DIOGO', '2020-06-16 01:06:22', '3')</span></i> <br> 
+</p> <hr> 
+<p> 
+<b>16/06/2020 14:31:28</b> <br> 
+<i>Model:App\Model\SafraModel <br> Erro ao gravar dados: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ', '2020-06-16 02:06:28')' at line 1<br> <b>SQL:</b><span style='color: red'>INSERT INTO lab_safra ( descricao, created_at) VALUES ( , '2020-06-16 02:06:28')</span></i> <br> 
+</p> <hr> 
+<p> 
+<b>16/06/2020 14:32:14</b> <br> 
+<i>Model:App\Model\SafraModel <br> Erro ao gravar dados: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ', '2020-06-16 02:06:14')' at line 1<br> <b>SQL:</b><span style='color: red'>INSERT INTO lab_safra ( descricao, created_at) VALUES ( , '2020-06-16 02:06:14')</span></i> <br> 
+</p> <hr> 

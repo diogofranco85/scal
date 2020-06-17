@@ -32,7 +32,7 @@ class MY_Controller extends Controller{
 
         $this->userData('iconnew','fa fa-plus fa-fw');
         $this->userData('iconsave','fa fa-save fa-fw');
-        $this->userData('iconexc','fa fa-trash fa-fw');
+        $this->userData('iconexc','fa fa-trash fa-fw text-danger');
         $this->userData('iconedit','fa fa-pencil fa-fw');
         $this->userData('iconclose','fa fa-sign-out fa-fw');
         $this->userData('iconprint','fa fa-print fa-fw');

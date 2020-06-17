@@ -5,6 +5,7 @@
 
 body{
     font-family: 'Cabin', 'Trebuchet MS','Arial', 'Lucida Sans Unicode', 'Lucida Sans' !important;
+    font-size: 12px;
 }
 
 .skin-green .main-header .logo {
@@ -24,5 +25,14 @@ body{
 }
 
 .codebar_font {
-    font-family: 'Libre Barcode 128', cursive; 'Arial' !important;
+    font-family: 'Libre Barcode 128', cursive, 'Arial' !important;
+}
+
+table {
+    border-collapse: separate;
+    border-spacing: 2px;
+}
+
+.dropdown-menu > li > a{
+    font-size: 12px;
 }

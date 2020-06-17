@@ -28,7 +28,7 @@
                         <div class="btn-group">
                             <a href="{{ url('/contratos/view') }}/{{  grid.id }}" alt="Visualizar contratos" class="btn btn-sm btn-flat bg-navy btnview"><i class="fa fa-bullseye fa-fw"></i> Contratos</a>
                             <a href="#" post_id="{{ grid.id }}" class="btn btn-sm btn-flat btn-info btnedit"><i class="{{ iconedit }}"></i> Editar</a>
-                            <a href="#" post_id="{{ grid.id }}" class="{{ btnexc }}"><i class="{{ iconexc }}"></i> Excluir</a>
+                            <a href="#" class="{{ btnexc }}" onclick="handleDelete(event,'cliente/delete', {{ grid.id }});" ><i class="{{ iconexc }}"></i> Excluir</a>
                         </div>
                     </div>
                 </td>
@@ -38,7 +38,7 @@
 </table>
 
 <!-- modal -->
-<form class='form' id='formcliente'>
+
 <div class="modal fade" tabindex="-1" role="dialog" id="formmodal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -47,7 +47,7 @@
         <h4 class="modal-title">Modal title</h4>
       </div>
       <div class="modal-body">
-
+          <form class='form' id='formcliente' enctype="multipart/form-data">
           <input type="hidden" name="id" id="idcliente">
           <div class='row'>
               <div class='col-md-12'>
@@ -66,16 +66,16 @@
                     </div>
                 </div>
           </div>
-
+        </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal"><i class="{{ iconclose }}"></i> Fechar</button>
-        <button type="submit" class="{{ btnsave }}"><i class="{{ iconsave }}"></i> Salvar</button>
+        <a href="#" class="{{ btnsave }}" onClick="handleCreate(event,'cliente','#formcliente')" ><i class="{{ iconsave }}"></i> Salvar</a>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-</form>
+
 {% endblock %}
 
 {% block js %}
@@ -100,7 +100,7 @@
 
   
        $('#formcliente').validate({ debug: true });
-
+        
         $('.btnnew').click(function(e){
           e.preventDefault();
           $('.modal-title').html('Adicionar Cliente');
@@ -113,7 +113,7 @@
           })
           return false;
         })
-
+        
         $('body').on('click','.btnedit',function(e){
           e.preventDefault();
 
@@ -161,6 +161,7 @@
            }
         })
 
+        /*
         $('#formcliente').submit(function(event){
           event.preventDefault();
 
@@ -184,7 +185,8 @@
           })
             return false;
         })
-
+        */
+        /*
         $('.btndel').on('click',function(e){
             e.preventDefault();
 
@@ -213,7 +215,7 @@
 
             return false;
         })
-
+        */
     })
 
   </script>

@@ -20,9 +20,7 @@ class Controller{
 
         require_once(ROOT.DS.'App'.DS.'Config'.DS.'application.php');
 
-        $environment = ENVIRONMENT == 'DESENVOLVIMENTO' ? '0' : '1';
-
-        if($environment == 0){
+        if( getenv('ENVIRONMENT') == 'development'){
             error_reporting(E_ALL);
             ini_set('display_errors', true);
         }else{
@@ -31,7 +29,7 @@ class Controller{
         }
 
         $this->userData('url_base',SITE_URL);
-        $this->userData('env_ambiente',$environment);
+        //$this->userData('env_ambiente',$environment);
 
         $this->load("Template",'view', 'Core\Template');
         $this->load('Input','input');
@@ -41,6 +39,8 @@ class Controller{
         $this->request = Request::createFromGlobals();
         $this->response = new Response();
         $this->response->setCharset('UTF-8');
+
+      
     }
 
     public function load($classe, $name = null, $pack = 'Core')
@@ -86,7 +86,7 @@ class Controller{
         $this->response->setStatusCode($status);
         $this->response->setContent($json);
         $this->response->setCharset($charset);
-        $this->response->headers->set('Content-Type:','application/json');
+        $this->response->headers->set('Content-Type:','application/json; text/plain');
         $this->response->send();
     }
 
