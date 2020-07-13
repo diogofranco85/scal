@@ -18,8 +18,6 @@ class Controller{
 
     public function __construct(){
 
-        require_once(ROOT.DS.'App'.DS.'Config'.DS.'application.php');
-
         if( getenv('ENVIRONMENT') == 'development'){
             error_reporting(E_ALL);
             ini_set('display_errors', true);
@@ -28,19 +26,15 @@ class Controller{
             ini_set('display_errors', false);
         }
 
-        $this->userData('url_base',SITE_URL);
-        //$this->userData('env_ambiente',$environment);
-
+        $this->userData('url_base', getenv('APP_URL'));
+       
         $this->load("Template",'view', 'Core\Template');
         $this->load('Input','input');
         $this->load('Session','session');
         $this->load('Encrypt','encrypt');
 
         $this->request = Request::createFromGlobals();
-        $this->response = new Response();
-        $this->response->setCharset('UTF-8');
-
-      
+        $this->response = new Response();      
     }
 
     public function load($classe, $name = null, $pack = 'Core')

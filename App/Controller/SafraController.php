@@ -43,14 +43,14 @@ class SafraController extends MY_Controller
                 $safra->created_at = date('Y-m-d h:m:s');
                 $safra->create();
 
-                $this->jsonResponse(['status' => 200, 'message' => 'Safra adicionada com sucesso']);
+                $this->jsonResponse(['status' => 200, 'message' => 'Safra <strong>adicionada</strong> com sucesso']);
             }else{
                 $safra = SafraModel::find($id);
                 $safra->descricao = $descricao;
                 $safra->updated_at = date('Y-m-d h:m:s');
                 $safra->update();
 
-                $this->jsonResponse(['status' => 200, 'message' => 'Safra atualizada com sucesso']);
+                $this->jsonResponse(['status' => 200, 'message' => 'Safra <strong>atualizada</strong> com sucesso']);
             }
 
             Transaction::close();
@@ -90,6 +90,7 @@ class SafraController extends MY_Controller
 
                 $contrato = new ContratosModel();
                 $contrato->where('idsafra','=',$id);
+                $contrato->where('ativo','=','S');
 
                 if(count($contrato->get()) > 0){
                     $this->jsonResponse(['status' => 400, 'message' => 'Existe contrato para essa safra cadastrado <br> É necessário excluir todos os contratos antes de excluir essa safra']);

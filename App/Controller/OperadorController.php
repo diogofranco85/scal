@@ -26,30 +26,42 @@ class OperadorController extends MY_Controller
     public function getOperador()
     {
         Transaction::open('valorem');
-        $codigo = $this->request->request->get('id');
+        $codigo = setint($this->input->get('id'));
         $operador = OperadorModel::all("cod = {$codigo}");
         
         if(count($operador) > 0){
-            echo json_encode( ['code' => 200, 'data' => $operador[0] ]);
+            echo json_encode( ['status' => 200, 'data' => $operador[0] ]);
         }else{
-            echo json_encode( [ 'code' => '404','message' => 'Operator not found']);
+            echo json_encode( [ 'status' => '404','message' => 'Operator not found']);
         }
 
         Transaction::close();
         
     }
 
-    public function index($id){
-        Transaction::open('valorem');
-
-        $operador = new OperadorModel();
-        $operador->where('cod','=', $id);
+    public function index(){
+        try{
         
-        $rs = $operador->get();
+            Transaction::open('valorem');
+            $id = $this->input->get('id');
 
-        $this->jsonResponse($rs[0]);
+            $operador = new OperadorModel();
+            $operador->fillable('id,name');
+            $operador->where('cod','=', $id);
+            
+            $rs = $operador->get();
+            
+            if(count($rs) == 0){
+                $this->jsonResponse(['status' => 400, 'message' => 'Operador não encontrado']);
+                return;
+            }
+            $this->jsonResponse(['status' => 200 , 'result' => $rs[0]]);
 
-        Transaction::close();
+            Transaction::close();
+        }catch(Exception $e){
+            $this->jsonResponse(['status' => 500, 'message' => $e->getMessage()]);
+        }
+
     }
 
 

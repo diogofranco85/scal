@@ -12,6 +12,21 @@
         tr.group:hover {
             text-decoration: underline;
         }
+
+        .modal-dialog-full {
+            height: 92% !important;
+            padding: 0;
+        }
+
+        .modal-content-full {
+            height: 99% !important;
+        }
+
+        iframe{
+            height: 100%;
+            width: 100%;
+        }
+
     </style>
 {% endblock %}
 
@@ -38,8 +53,8 @@
                 <td>{{ e.hibrido }}</td>
                 <td>{{ e.setor == 'R' ? 'RECEBIMENTO' : 'TORRE' }}</td>
                 <td>
-                    <a href="{{ url('/etiqueta/list/cliente') }}/{{ e.idcliente }}/{{ e.idcontrato }}" class="btn btn-sm btn-flat btn-primary btnprint"><i class="{{ iconprint }}"></i> Visualizar</a>
-                    <a href="{{ url('/etiqueta/print/all') }}/cliente/{{ e.idcliente }}/contrato/{{ e.idcontrato }}"  target="_blank" class=" {{ btnprint }} btnview"><i class="{{ iconprint }}"></i> Imprimir todas</a>
+                    <a href="{{ url('/etiqueta/list/cliente') }}/{{ e.idcliente }}/contrato/{{ e.idcontrato }}/setor/{{ e.setor }}" class="btn btn-sm btn-flat btn-primary btnprint"><i class="{{ iconprint }}"></i> Visualizar</a>
+                    <a href="#" onClick="imprimirTodas('{{ e.idcliente }}','{{ e.idcontrato }}','{{ e.setor }}');" class="{{ btnprint }} btnview"><i class="{{ iconprint }}"></i> Imprimir todas</a>
             </tr>
 
                 </td>
@@ -76,7 +91,7 @@
                             <div class='col-md-9'>
                                 <div class='form-group'>
                                     <label for='idcontrato'>Contrato / Hibrido </label>
-                                    <select class='form-control' name='idcontrato' id='idcontrato' required >
+                                    <select class='form-control' name='idcontrato' id='idcontrato'  >
 
                                     </select>
                                 </div>
@@ -94,7 +109,7 @@
                              <div class='col-md-2'>
                                 <div class='form-group'>
                                     <label for='operador'>Operador</label>
-                                    <input class='form-control' name='idoperador' id='idoperador' required >
+                                    <input class='form-control' name='idoperador' id='idoperador' >
                                     <span class="nameOperador"></span>
                                 </div>
                             </div>
@@ -110,7 +125,7 @@
                             <div class='col-md-6'>
                                 <div class='form-group'>
                                     <label for='setor'>Setor Responsável</label>
-                                    <select class='form-control' name='setor' id='setor' required >
+                                    <select class='form-control' name='setor' id='setor' >
                                         <option value="R">Recebimento</option>
                                         <option value="T">Torre</option>
                                     </select>
@@ -128,13 +143,102 @@
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
     </form>
+
+    <!-- visualizar etiquetas -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="preview">
+        <div class="modal-dialog modal-dialog-full" role="document">
+            <div class="modal-content modal-content-full modal-lg">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Visualizar etiquetas</h4>
+                </div>
+                <div class="modal-body">
+                    <iframe width='100%' height='400' style="border: 1px solid #eee" src="http://localhost/d5"></iframe>
+                </div>
+                 <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block js %}
+
     {{ js('datatables') }}
     {{ js('select2') }}
 
     <script>
+
+       fieldOperador = document.querySelector('#idoperador');
+       fieldOperador.addEventListener('change',(event) => {
+           count = fieldOperador.value;
+           if( count.length >= 3){
+            getOperator(event, '#idoperador','#operador')
+           }
+       });
+
+       
+       const imprimirTodas = (cliente, contrato, setor) => {
+           const url = `{{ url_base }}/etiquetas/imprimir/cliente/${cliente}/contrato/${contrato}/setor/${setor}`;
+
+           const newWindow = window.open(url,'Visualizar etiquetas','scrollbars=yes');
+           if(window.focus){
+               newWindow.focus();
+           }
+
+       }
+
+       const form = document.querySelector('#form');
+       form.addEventListener('submit', (event) => {
+           event.preventDefault();
+
+           if(document.querySelector('#idcontrato').value == ''){
+                bootbox.alert('Campo <strong>Contrato/Híbrido</strong> obrigatório');
+                return;
+           }
+
+           if(document.querySelector('#idoperador').value == ''){
+                messagebox.error('Campo <strong>Operador</strong> obrigatório');
+                return;
+           }
+
+           if(document.querySelector('#setor').value == ''){
+                 messagebox.error('Campo <strong>Setor Responsável</strong> obrigatório')
+                return;
+           }
+
+           if(document.querySelector('#operador').value == ''){
+                 messagebox.error('<strong>Código do operador inválido</strong>')
+                return;
+           }
+
+           const data = handleStore(event, 'etiquetas','#form','#formmodal', false ) 
+
+           bootbox.confirm({
+               title: 'IMPRESSÂO',
+               message: `
+                <div class='row'>
+                    <div class="col-md-2"><i class="fa fa-print fa-4x"></i></div>
+                    <div class="col-md-10"><h4>Deseja <strong>imprimir</strong> as etiquetas agora ?</h4></div>`,
+               buttons:{
+                   confirm: {
+                       label: 'Imprimir',
+                       className: 'btn-success'
+                   },
+                   cancel:{
+                       label: 'Sair sem imprimir',
+                       className: 'btn-danger'
+                   }
+               },
+               callback: function(result){
+                   if(result){
+                       alert('imprimindo..');
+                   }
+               }
+           })
+       })
+
        $(document).ready(function(){
 
            $('#idcliente').select2({
@@ -193,7 +297,7 @@
                $('#formmodal').modal('show');
                $('#idcontrato').html('');
                $('#idcontrato').val('');
-               $('#idcliente').val('');
+               $('#idcliente').val(null).trigger('change');
                $('#setor').val('');
                $('#idoperador').val('');
                $('#operador').val('');
@@ -219,54 +323,6 @@
                })
            })
 
-
-
-            $('#idoperador').bind('keyup keypress focus paste',function(e){
-                const cod = $(this).val();
-                
-                if(cod.length < 3 ){
-                    return;
-                }
-
-                verificarlogin();
-
-                $.get(`{{ url_base }}/operador/${cod}`, {cod}, (data) => {
-                     $('#operador').val(data.name);
-                });
-            })
-
-           $('#form').submit(function(e){
-               e.preventDefault();
-
-                verificarlogin();
-
-                /*
-                if($('#idcontrato').val() === ''){
-                    return;
-                }
-
-                if($('#idoperador').val() === ''){
-                    return;
-                }
-                */
-               
-               $.ajax({
-                   url: '{{ url_base }}/gerar-etiquetas',
-                   data: $('#form').serialize(),
-                   method: 'post',
-                   dataType: 'json',
-                   success: function(data){
-                        //console.log('enviado');
-                        cliente = data.idcliente;
-                        contrato = data.idcontrato;
-                        let uri = '{{ url('/etiqueta/print/all/cliente/') }}';
-                        uri = uri+`${cliente}/contrato/${contrato}`;
-                        window.open(uri,'_blank');
-                        location.reload(true);
-                   }
-               })
-               return false;
-           })
     })
     </script>
 

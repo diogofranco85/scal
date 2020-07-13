@@ -6,10 +6,19 @@
 
 {% block content %}
     <div class="box-header">
-        <h3 class="box-title">Listagem de etiquetas geradas</h3>
-        <a href="#" onclick="window.history.back();" class="pull-right btn btn-flat bg-gray btn-sm"><i class="fa fa-angle-double-left"></i> Voltar</a>
+        <h3 class="box-title">Etiquetas geradas <small>/ por cliente </small></h3>
+        <a href="{{ url('/etiqueta') }}" class="pull-right btn btn-flat bg-gray btn-sm"><i class="fa fa-angle-double-left"></i> Voltar</a>
     </div>
-    <table class="table table-bordered table-striped dataTable" id="grid" data-page-length='{{ limit_data }}'>
+    <div class="container-fluid" style="background-color: #ddd; margin-bottom: 15px;">
+        <div class="row">
+            <div class="col-dm-12">
+                <h4>
+                    <small>Cliente:</small> <strong>{{ cliente.nmcliente }}</strong>
+                </h4>
+            </div>
+        </div>
+    </div>
+    <table class="table table-striped dataTable" id="grid" data-page-length='{{ limit_data }}'>
         <thead>
         <tr>
             <th>Num.Etiqueta</th>
@@ -41,9 +50,8 @@
                     {% endif %}
                 </td>
                 <td>
-                    <a href="{{ url('/etiqueta/imprimir') }}/{{ e.id }}" target="_blank" class="{{ btnprint }}"><i class="{{ iconprint }}"></i> Imprimir</a>
+                    <a href="#" onClick="imprimirEtiqueta('{{ e.id }}');" class="{{ btnprint }}"><i class="{{ iconprint }}"></i> Imprimir</a>
                 </td>
-
             </tr>
             {% endfor %}
         </tbody>
@@ -103,6 +111,16 @@
 {% block js %}
     {{ js('datatables') }}
     <script>
+
+        const imprimirEtiqueta = (id) => {
+            let url = `{{ url_base }}/etiqueta/imprimir/${id}`; 
+            const newWindow = window.open(url,'Impressão de etiqueta','scrollbars=yes, top=45px, left=150px, width=450px, height:150px ');
+
+            if(window.focus){
+                newWindow.focus();
+            }
+        } 
+
        $(document).ready(function(){
            var table = $('#grid').DataTable({
                language: {

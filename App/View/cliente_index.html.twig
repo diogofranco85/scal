@@ -8,27 +8,38 @@
 {% block content %}
 <div class="box-header">
   <h3 class="box-title">Listar Clientes</h3>
-  <a href="#" class="{{ btnnew }} btnnew pull-right"><i class="fa fa-plus"></i> Novo</a>
+  <a href="#" class="{{ btnnew }} pull-right" onClick="onNew();"><i class="fa fa-plus"></i> Novo</a>
 </div>
 <table class="{{ datatable_class }}" id="grid" data-page-length='{{ limit_data }}'>
   <thead>
     <tr>
       <th>Código</th>
-      <th width="70%">Descrição</th>
-      <th>Ações</th>
+      <th>Empresa</th>
+      <th>Nome Resumido</th>
+      <th></th>
     </tr>
   </thead>
   <tbody>  
         {% for grid in clientes %}
             <tr>
                 <td>{{ "%04d"|format(grid.id) }}</td>
+                <td>{{ grid.nmcliente }}</td>
                 <td>{{ grid.descricao }}</td>
                 <td>
                     <div class="btn-group">
                         <div class="btn-group">
-                            <a href="{{ url('/contratos/view') }}/{{  grid.id }}" alt="Visualizar contratos" class="btn btn-sm btn-flat bg-navy btnview"><i class="fa fa-bullseye fa-fw"></i> Contratos</a>
-                            <a href="#" post_id="{{ grid.id }}" class="btn btn-sm btn-flat btn-info btnedit"><i class="{{ iconedit }}"></i> Editar</a>
-                            <a href="#" class="{{ btnexc }}" onclick="handleDelete(event,'cliente/delete', {{ grid.id }});" ><i class="{{ iconexc }}"></i> Excluir</a>
+                            <button  type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-th"></i> Ação</button>
+                            <ul class="dropdown-menu pull-left">
+                                  <li>
+                                      <a href="{{ url('/contratos/view') }}/{{  grid.id }}" alt="Visualizar contratos"><i class="fa fa-bullseye fa-fw"></i> Contratos</a>
+                                  </li>
+                                  <li>
+                                      <a href="#" onClick="onEdit(event,{{ grid.id }})" ><i class="{{ iconedit }}"></i> Editar</a>
+                                  </li>
+                                  <li>
+                                      <a href="#" onclick="handleDelete(event,'cliente', {{ grid.id }});" ><i class="{{ iconexc }}"></i> Excluir</a>
+                                  </li>
+                            </ul>
                         </div>
                     </div>
                 </td>
@@ -38,17 +49,17 @@
 </table>
 
 <!-- modal -->
-
+<form class='form' action="{{ url('/cliente') }}" id='formcliente' enctype="multipart/form-data">
 <div class="modal fade" tabindex="-1" role="dialog" id="formmodal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Modal title</h4>
+        <h4 class="modal-title">Clientes</h4>
       </div>
       <div class="modal-body">
-          <form class='form' id='formcliente' enctype="multipart/form-data">
-          <input type="hidden" name="id" id="idcliente">
+          
+          <input type="hidden" name="id" id="id">
           <div class='row'>
               <div class='col-md-12'>
                  <div class='form-group'>
@@ -66,24 +77,57 @@
                     </div>
                 </div>
           </div>
-        </form>
+        
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal"><i class="{{ iconclose }}"></i> Fechar</button>
-        <a href="#" class="{{ btnsave }}" onClick="handleCreate(event,'cliente','#formcliente')" ><i class="{{ iconsave }}"></i> Salvar</a>
+        <button type="submit" class="{{ btnsave }}" ><i class="{{ iconsave }}"></i> Salvar</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
+</form>
 {% endblock %}
 
 {% block js %}
   {{ js('datatables') }}
-  {{ js('inputmask') }}
   {{ js('validate') }}
-  {{ js('toastr') }}
+
   <script>
+    const onNew = () => {
+        document.querySelector('#id').value = ''; 
+        document.querySelector('#formcliente').reset();
+        $('#formmodal').modal();
+    }
+
+    const onEdit = (event, id) => {
+      handleEdit(event, 'cliente', id )
+      .then( (response) => {
+          const {descricao, id, nmcliente } = response.result;
+          document.querySelector('#id').value = id;
+          document.querySelector('#descricao').value = descricao;
+          document.querySelector('#nmcliente').value = nmcliente;
+          $('#formmodal').modal();
+      });
+    }
+    
+    const form = document.querySelector('#formcliente');
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      if(document.querySelector('#nmcliente').value == ''){
+        bootbox.alert('<strong>Nome do cliente</strong> não pode ficar em branco');
+        return;
+      }
+
+      if(document.querySelector('#descricao').value == ''){
+        bootbox.alert('<strong>Descrição</strong> não pode ficar em branco');
+        return;
+      }
+
+      handleStore(event, 'cliente', '#formcliente');
+    })
+
     $(document).ready(function(){
        var table = $('#grid').DataTable({
           responsive: true,
@@ -97,125 +141,6 @@
             url: '{{ assets('bower_components/datatables.net/js/Portuguese-Brasil.json') }}'
           }
         });
-
-  
-       $('#formcliente').validate({ debug: true });
-        
-        $('.btnnew').click(function(e){
-          e.preventDefault();
-          $('.modal-title').html('Adicionar Cliente');
-          $('#formmodal').modal();
-          $('#nmcliente').val('');
-          $('#descricao').val('');
-          $('#idcliente').val('');
-          $('#formmodal').on('shown.bs.modal',() => {
-              $('#nmcliente').focus();
-          })
-          return false;
-        })
-        
-        $('body').on('click','.btnedit',function(e){
-          e.preventDefault();
-
-          verificarlogin();
-          
-          $.ajax({
-            type: 'POST',
-            url: '{{ url('/cliente/data') }}',
-            data: 'id='+$(this).attr('post_id'),
-            dataType: 'JSON',
-            success: function(data){
-             
-              $('#nmcliente').val(data.nmcliente);
-              $('#descricao').val(data.descricao);
-              $('#idcliente').val(data.id);
-              $('.modal-title').html('Editar Cliente');
-              $('.modal').modal('show');
-            }
-          })
-         
-          return false;
-        })
-
-        $('#numcliente').bind('keypress keyup paste',function(){
-          value = $('#numcliente').val();
-          if( value.length < 10){
-            return false;
-          }
-
-           verificarlogin(); 
-
-           if( $('#idCliente').val() == ''){
-                $.ajax({
-                type: 'POST',
-                url: '{{ url("/cliente/validate/cnpj") }}',
-                data: $('#formcliente').serialize(),
-                
-                success: function(data){
-                  console.log(data);
-                  if(data == true){
-                    toastr.danger('CNPJ já está cadastrado');
-                  }
-                }
-              })
-           }
-        })
-
-        /*
-        $('#formcliente').submit(function(event){
-          event.preventDefault();
-
-          verificarlogin();
-
-          $.ajax({
-            url: "{{ url('/cliente/store') }}",
-            data: $('#formcliente').serialize(),
-            type: 'POST',
-            dataType: 'JSON',
-            success: function(data){
-              if(data.retorno == 200){
-                alert('dados salvo com sucesso !!');
-              }
-              location.reload(true);
-            },
-            error: function (data) {
-              console.log('Error:', data);
-              $('.btn-save').html('Salvar');
-            }
-          })
-            return false;
-        })
-        */
-        /*
-        $('.btndel').on('click',function(e){
-            e.preventDefault();
-
-            verificarlogin();
-
-            var idcliente = $(this).attr('post_id');
-
-            $.ajax({
-                data: { idcliente },
-                dataType: 'json',
-                method: 'delete',
-                url: "{{ url('/cliente/delete') }}",
-                success: (data) => {
-                    if(data.code == 200) {
-                        toastr.success(data.message, 'Valorem SCAL', {"closeButton": true});
-                        let reload = setInterval(() => {
-                            location.reload(true);
-                        }, 1000);
-                    }else if(data.code == 500) {
-                            toastr.warning(data.message, 'Valorem SCAL', { "closeButton": true});
-                    }else{
-                        toastr.error(data.message, 'Valorem SCAL', { "closeButton": true});
-                    }
-                }
-            })
-
-            return false;
-        })
-        */
     })
 
   </script>

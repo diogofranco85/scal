@@ -11,6 +11,8 @@
   <link rel="stylesheet" href="{{ assets('vendors/adminlte/css/AdminLTE.min.css') }}">
   <link rel="stylesheet" href="{{ assets('vendors/adminlte/css/skins/skin-green.min.css') }}">
   <link rel="stylesheet" href="{{ assets('css/applications.css') }}">
+  <link rel="stylesheet" href="{{ assets('css/prisma.css') }}">
+  <script src="{{ assets('js/prism.js') }}"></script>
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
@@ -127,13 +129,13 @@
           <!-- fim message -->
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <img src="{{ url_base }}/Assets/img/profiles/{{ usuario.usuario }}.jpg" onerror="this.onerror=null;this.src='{{ url_base }}/Assets/img/user2-160x160.jpg';" class="user-image" alt="User Image">
+              <img src="{{ url_base }}/Assets/img/profiles/{{ usuario.usuario }}.jpg" onerror="this.onerror=null;this.src='{{ url_base }}/Assets/img/valorem.jpg';" class="user-image" alt="User Image">
               <span class="hidden-xs">{{ usuario.nome }}</span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
               <li class="user-header">
-                <img src="{{ url_base }}/Assets/img/profiles/{{ usuario.usuario }}.jpg" onerror="this.onerror=null;this.src='{{ url_base }}/Assets/img/user2-160x160.jpg';" class="img-circle" alt="User Image">
+                <img src="{{ url_base }}/Assets/img/profiles/{{ usuario.usuario }}.jpg" onerror="this.onerror=null;this.src='{{ url_base }}/Assets/img/valorem.jpg';" class="img-circle" alt="User Image">
 
                 <p>
                   {{ usuario.nome }}
@@ -164,7 +166,7 @@
       <!-- Sidebar user panel -->
       <div class="user-panel">
         <div class="pull-left image">
-          <img src="{{ url_base }}/Assets/img/profiles/{{ usuario.usuario }}.jpg" onerror="this.onerror=null;this.src='{{ url_base }}/Assets/img/user2-160x160.jpg';" class="img-circle" alt="User Image">
+          <img src="{{ url_base }}/Assets/img/profiles/{{ usuario.usuario }}.jpg" onerror="this.onerror=null;this.src='{{ url_base }}/Assets/img/valorem.jpg';" class="img-circle" alt="User Image">
         </div>
         <div class="pull-left info">
           <p>{{ usuario.nome }}</p>
@@ -290,9 +292,43 @@
               </div>`,
           })
   }
+  
+  var messagebox = {
+    error: (message) => requestError(message),
+  };
+
+  requestError = (message) => {
+    bootbox.alert({
+            title: 'Error ao processar requisicao',
+            message: `
+              <div class="row">
+                <div class="col-md-2">
+                  <i class="ion ion-social-snapchat text-danger" style="font-size: 48px; color=red"></i>
+                </div>
+                <div class="col-md-10 text-danger"><h5>${message}</h5></div>
+              </div>`,
+          })
+  }
+
+  const getOperator = async (event, fieldId, fieldValue) => {
+    event.preventDefault();
+    inputid = document.querySelector(fieldId);
+    inputName = document.querySelector(fieldValue);
+
+    const { data } = await api.get(`operador?id=${parseInt(inputid.value)}`);
+
+    if(data.status != 200){
+        requestError(`${data.message}`)
+        inputid.focus();
+        inputName.value = '';
+        return;
+    }
+
+    inputName.value = data.result.name
+  }
 
   //SALVAR NOVO REGISTRO
-  const handleStore = async (event, url, form, modal = '#formmodal') => {
+  const handleStore = async (event, url, form, modal = '#formmodal', reload = true) => {
     
     event.preventDefault();
     try{
@@ -307,8 +343,6 @@
       const response = await api.post(url, formData);
       
       const {data} = response;
-      
-      console.log(data);
 
       bootbox.alert({
         title: '<h4>NOVO REGISTRO</h4>',
@@ -319,10 +353,15 @@
           </div>`,
         onHide: () => {
           if(data.status === 200){
-            location.reload(true);
+            if(reload){
+              location.reload(true);
+            }
           }
         }
       });
+
+    return data;
+
     }catch(err){
       requestError(err);
     }
@@ -345,7 +384,7 @@
               ${iconQuestion}
             </div>
             <div class='col-md-10'>
-              <h5>Deseja excluir esse registro</h5>
+              <h5>Deseja excluir esse registro ?</h5>
             </div>
           </div>`,
         title: '<h4>EXCLUSÃO DE REGISTRO</h4>',
@@ -414,10 +453,6 @@
       }catch(err){
         requestError(err);
       }
-  }
-
-  const handleNew = async () => {
-    
   }
 
   const verificarlogin = async () => {

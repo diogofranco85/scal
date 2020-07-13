@@ -31,7 +31,7 @@ class Template{
     private function url()
     {
         $url_base = new \Twig\TwigFunction('url', function($uri = '/'){
-            $base = SITE_URL;
+            $base = getenv('APP_URL');
             echo "{$base}{$uri}";
         });
         $this->twig->addFunction($url_base);
@@ -39,7 +39,7 @@ class Template{
 
     private function assets(){
         $assets = new \Twig\TwigFunction('assets', function($uri){
-            $base = SITE_URL;
+            $base = getenv('APP_URL');
             echo "{$base}/Assets/{$uri}";
         });
         $this->twig->addFunction($assets);
@@ -49,7 +49,7 @@ class Template{
         
         $import_js = new \Twig\TwigFunction('js',function($name){
             $this->include();
-           $base = SITE_URL;
+           $base = getenv('APP_URL');
            $import = $this->html['js'];
             if(array_key_exists($name,$import)){
                 if(is_array($import[$name])){
@@ -73,7 +73,7 @@ class Template{
         
         $import_js = new \Twig\TwigFunction('css',function($name){
            $this->include();
-           $base = SITE_URL;
+           $base = getenv('APP_URL');
            $import = $this->html['css'];
             if(array_key_exists($name,$import)){
                 if(is_array($import[$name])){

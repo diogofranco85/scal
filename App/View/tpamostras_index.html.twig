@@ -7,7 +7,7 @@
 {% block content %}
 <div class="box-header">
   <h3 class="box-title">Listagem de tipos de amostras</h3>
-  <a href="#" class="{{ btnnew }} btnnew pull-right"><i class="{{ iconnew }}"></i> Novo</a>
+  <a href="#" onClick="onNew();" class="{{ btnnew }} pull-right"><i class="{{ iconnew }}"></i> Novo</a>
 </div>
 <table class="table table-bordered table-striped dataTable compact" id="grid" data-page-length='{{ limit_data }}'>
   <thead>
@@ -15,7 +15,7 @@
       <th>Código</th>
       <th>Descrição</th>
       <th>Setor</th>
-      <th>Ações</th>
+      <th></th>
     </tr>
   </thead>
   <tbody>  
@@ -32,8 +32,15 @@
                 <td>
                     <div class="btn-group">
                         <div class="btn-group">
-                            <a href="#" post_id="{{ grid.id }}" class="{{ btnedit }} btnedit"><i class="{{ iconedit }}"></i> Editar</a>
-                            <a href="#" post_id="{{ grid.id }}" class="{{ btnexc }} btndel"><i class="{{ iconexc }}"></i> Excluir</a>
+                          <button  type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-th"></i> Ação</button>
+                          <ul class="dropdown-menu pull-left">
+                            <li>
+                              <a href="#" onClick="onEdit(event, {{ grid.id }})"><i class="{{ iconedit }}"></i> Editar</a>
+                            </li>
+                            <li>
+                              <a href="#" onClick="handleDelete(event, 'tipo_amostra', {{ grid.id }});"><i class="{{ iconexc }}"></i> Excluir</a>
+                            </li>
+                          </ul>
                         </div>
                     </div>
                 </td>
@@ -43,15 +50,16 @@
 </table>
 
 <!-- modal -->
+<form class='form' id='formTipo'>
 <div class="modal fade" tabindex="-1" role="dialog" id="formmodal">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Modal title</h4>
+        <h4 class="modal-title">FORMULÁRIO - TIPO AMOSTRAS</h4>
       </div>
       <div class="modal-body">
-        <form class='form' id='formcliente'>
+        
           <input type="hidden" name="id" id="id">
           <div class='row'>
               <div class='col-md-12'>
@@ -75,15 +83,16 @@
 
           </div>
          
-        </form>
+       
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
-        <button type="button" class="btn btn-primary btn-save">Salvar</button>
+        <button type="submit" class="btn btn-primary btn-save">Salvar</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+ </form>
 
 {% endblock %}
 
@@ -91,6 +100,35 @@
   {{ js('datatables') }}
 
   <script>
+    const onNew = () => {
+        document.querySelector('#id').value = ''; 
+        document.querySelector('#formTipo').reset();
+        $('#formmodal').modal();
+    }
+
+    const onEdit = (event, id) => {
+      handleEdit(event, 'tipo_amostra', id )
+      .then( (response) => {
+          const {descricao, id, setor} = response.result;
+          document.querySelector('#id').value = id;
+          document.querySelector('#descricao').value = descricao;
+          document.querySelector('#setor').value = setor;
+          $('#formmodal').modal();
+      });
+    }
+    
+    const form = document.querySelector('#formTipo');
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      if(document.querySelector('#descricao').value == ''){
+        bootbox.alert({title:'ERROR DE VALIDAÇÃO',message:'Descrição não pode ficar em branco'});
+        return;
+      }
+
+      handleStore(event, 'tipo_amostra', '#formTipo');
+    })
+
     $(document).ready(function(){
        var table = $('#grid').DataTable({
          responsive: true,
@@ -104,58 +142,6 @@
             url: '{{ assets('bower_components/datatables.net/js/Portuguese-Brasil.json') }}'
           }
         });
-
-        $('.btnnew').click(function(e){
-          e.preventDefault();
-          $('.modal-title').html('Adicionar Tipos');
-          $('.modal').modal('show');
-          $('#id').val('');
-          $('#descricao').val('');
-          $('#setor').val('');
-          return false;
-        })
-
-        $('body').on('click','.btnedit',function(e){
-          e.preventDefault();
-          $.ajax({
-            type: 'POST',
-            url: '{{ url('/dados-tp') }}',
-            data: 'id='+$(this).attr('post_id'),
-            dataType: 'JSON',
-            success: function(data){
-              $('#descricao').val(data.descricao);
-              $('#id').val(data.id);
-              $('#setor').val(data.setor);
-              $('.modal-title').html('Editar Tipos');
-              $('.modal').modal('show');
-            }
-          })
-         
-          return false;
-        })
-
-        $('.btn-save').click(function(e){
-          e.preventDefault();
-
-          $.ajax({
-            url: "{{ url('/salvar-dados-tp') }}",
-            data: $('#formcliente').serialize(),
-            type: 'POST',
-            dataType: 'JSON',
-            success: function(data){
-              if(data.retorno == 200){
-                alert('dados salvo com sucesso !!');
-              }
-              $('.modal').modal('hide');
-              window.location.reload();
-            },
-            error: function (data) {
-              console.log('Error:', data);
-              $('.btn-save').html('Salvar');
-            }
-          })
-        })
-    })
-
+    });
   </script>
 {% endblock %}

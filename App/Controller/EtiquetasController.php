@@ -21,19 +21,17 @@
     public function index(){
 
       Transaction::open('valorem');
-
       $etiquetas = new EtiquetasModel();
       $rs_etiquetas = $etiquetas->etiqueta_index();
-
+      
       $clientes = new ClientesModel();
-      $clientes->order('nmcliente');
       $clientes->where('ativo','=','S');
       $rs_clientes = $clientes->get();
 
       Transaction::close();
 
-      $this->userData('clientes', $rs_clientes);
       $this->userData('etiquetas',$rs_etiquetas);
+      $this->userData('clientes',$rs_clientes);
       $this->userData('page_title','Etiquetas');
       $this->render('etiquetas_index');
     }
@@ -59,15 +57,15 @@
         Transaction::close();
     }
 
-    public function gerar(){
+    public function store(){
 
         Transaction::open('valorem');
 
-        $cont = $this->request->request->get('numetiquetas');
-        $contrato = $this->request->request->get('idcontrato');
-        $cliente = $this->request->request->get('idcliente');
-        $setor = $this->request->request->get('setor');
-        $cod_operador = $this->request->request->get('idoperador');
+        $cont = $this->input->body('numetiquetas');
+        $contrato = $this->input->body('idcontrato');
+        $cliente = $this->input->body('idcliente');
+        $setor = $this->input->body('setor');
+        $cod_operador = $this->input->body('idoperador');
 
         $operadorModel = new OperadorModel();
         $operadorModel->where('cod','=',$cod_operador);
@@ -99,15 +97,27 @@
             $etiquetas->created_at = date('Y-m-d h:i:s');
             $etiquetas->create();
 
+            $lastID = $etiqueta->id;
+
         }
 
-        echo json_encode(array('idcliente' => $cliente, 'idcontrato' => $contrato));
+        $this->jsonResponse(
+            array(
+                'status' => 200,
+                'message' => '<strong>Etiquetas</strong> geradas com sucesso',
+                'result' => [
+                    'id' => $lastID,
+                    'idcliente' => $cliente, 
+                    'idcontrato' => $contrato
+                ]
+            )
+        );
 
         Transaction::close();
 
     }
 
-    public function viewAll($idcliente, $idcontrato){
+    public function viewAll($idcliente, $idcontrato, $setor){
         Transaction::open('valorem');
 
         $colunas = [
@@ -123,13 +133,14 @@
         $etiquetas->where('lab_etiquetas.idcliente','=',$idcliente);
         $etiquetas->where('lab_etiquetas.idcontrato','=',$idcontrato);
         $etiquetas->where('lab_etiquetas.status','=','N');
+        $etiquetas->where('lab_etiquetas.setor','=', $setor);
         $prt_etiquetas = $etiquetas->get();
 
         $pdf = new \Mpdf\Mpdf([
             'mode' => 'utf-8',
             'orientation' => 'L',
             'format' => [26,55],
-            'margin_left' => 1,
+            'margin_left' => 1.5,
             'margin_right' => 1,
             'margin_top' => 0,
             'margin_bottom' => 0,
@@ -253,7 +264,7 @@
 
     }
 
-    public function listview($idcliente, $idcontrato){
+    public function listview($idcliente, $idcontrato, $setor){
         Transaction::open('valorem');
 
             $colunas = [
@@ -272,12 +283,17 @@
             $etiquetas->where('lab_etiquetas.ativo','=','S');
             $etiquetas->where('lab_etiquetas.idcliente','=',$idcliente);
             $etiquetas->where('lab_etiquetas.idcontrato','=',$idcontrato);
-            //$etiquetas->group('lab_etiquetas.setor, lab_etiquetas.numetiqueta');
-            //$etiquetas->order('lab_etiquetas.id ASC');
+            $etiquetas->where('lab_etiquetas.setor','=',$setor);
 
             $rs_etiquetas = $etiquetas->get(false, true);
 
+            $cliente = new ClientesModel();
+            $cliente->fillable('id,nmcliente');
+            $cliente->where('id','=', $idcliente);
+            $rs_cliente = $cliente->get();
+
             $this->userData('etiquetas',$rs_etiquetas);
+            $this->userData('cliente', $rs_cliente[0]);
             $this->userData('page_title','Etiquetas geradas');
             $this->render('etiquetas_list');
 
@@ -296,7 +312,7 @@
             'mode' => 'utf-8',
             'orientation' => 'L',
             'format' => [26,55],
-            'margin_left' => 1,
+            'margin_left' => 1.5,
             'margin_right' => 1,
             'margin_top' => 0,
             'margin_bottom' => 0,
@@ -359,7 +375,7 @@
                 </table>
                 <div class="dbarcode">
                     <barcode code="{{barcode}}" type="C39" class="barcode" height="0.60" class="barcode"></barcode>
-                   <p style="font-size: 0.3rem; padding: 1px; margin: 1px">{{barcode}}</p>
+                   <p style="font-size: 6px; padding: 1px; margin: 1px">{{barcode}}</p>
                 </div>
                 
                 <table width="100%" cellpadding="0" cellspacing="0" class="table">
@@ -369,9 +385,9 @@
                         <td>Setor</td>
                     </tr>
                     <tr>
-                        <td style="font-size: 12px;">{{cliente}}</td>
-                        <td style="font-size: 12px">{{contrato}}</td>
-                        <td style="font-size: 12px">{{setor}}</td>    
+                        <td style="font-size: 6px;"><b>{{cliente}}</b></td>
+                        <td style="font-size: 6px"><b>{{contrato}}</b></td>
+                        <td style="font-size: 6px"><b>{{setor}}</b></td>    
                     </tr>
                 </table>
             </div>

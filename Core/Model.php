@@ -98,7 +98,11 @@ class Model{
     }
 
     public function toArray(){
-        return $this->object;
+        try{
+            return $this->object;
+        }catch(\Exception $e){
+            echo json_encode(['status' => 500, 'message' => $e->getMessage()]);
+        }
     }
 
     public static function all($conditions = '', int $limit = 0, int $offset = 0)
@@ -200,8 +204,7 @@ class Model{
         }catch(\PDOException $e){
             $log = new LoggerHTML('database.html');
             $log->write('Model:' . get_called_class() .' <br> Erro ao consultar: '.$e->getMessage() . "<br> <b>SQL:</b><span style='color: red'>{$this->sql}</span>");
-            echo $e->getMessage();
-            exit();
+            new \Core\Exception($e);
         }
             
     }
@@ -432,6 +435,10 @@ class Model{
         $sql = ("select max({$this->primarykey}) as {$this->primarykey} from {$this->tablename}");
         $row = $this->db->execute($sql);
         return $row[0][$this->primarykey];
+    }
+
+    public function limit(int $value){
+        $this->limit = $value;
     }
 
     public function __clone(){

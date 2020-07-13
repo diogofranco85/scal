@@ -16,7 +16,7 @@
                $whoops->register();
             }else{
                 $SentryConfig = array('dsn' => getenv('SENTRY_DSN'));
-                Sentry\init($SentryConfig);
+                \Sentry\init($SentryConfig);
             }
 
             date_default_timezone_set('America/Sao_Paulo');

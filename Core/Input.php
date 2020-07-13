@@ -4,7 +4,7 @@ namespace Core;
 
 class Input{
 
-    private Array $request_body = [];
+    private $request_body = [];
 
     public function post($key, $value = NULL){
             if(is_null($value)){
@@ -55,6 +55,7 @@ class Input{
         if(count($this->request_body) == 0 ){
             $this->request_body = json_decode(file_get_contents('php://input'), true);
         } 
+        //__d($this->request_body);
         if(array_key_exists($key, $this->request_body)){
             return $this->request_body[$key];
         }

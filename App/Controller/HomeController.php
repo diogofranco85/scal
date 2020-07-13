@@ -20,10 +20,40 @@
     public function indexAction(){
 
       Transaction::open('valorem');
+      
+      $etiquetas_colunas = array(
+        'lab_etiquetas' => ['id as idEtiquetas','setor'],
+        'lab_cliente' => ['nmcliente'],
+        'lab_contrato' => ['hibrido', 'numcontrato'],
+        'lab_operador' => ['name']
+      );
+
+      $etiquetas = new EtiquetasModel();
+      $etiquetas->fillable($etiquetas_colunas);
+      $etiquetas->innerJoin('lab_contrato','id','idcontrato');
+      $etiquetas->innerJoin('lab_cliente','id','idcliente');
+      $etiquetas->innerJoin('lab_operador','id','idoperador');
+      $etiquetas->limit(10);
+      $etiquetas->order('lab_etiquetas.id DESC');
+      
+
+      $contratos = new ContratosModel();
+      $contratos->fillable(array('lab_cliente' => ['nmcliente'], 'lab_contrato' => ['hibrido','numcontrato']));
+      $contratos->innerJoin('lab_cliente','id','idcliente');
+      $contratos->limit(10);
+      $contratos->order('lab_contrato.id DESC');
+
+
+
       $this->userData('clientes', count(ClientesModel::All('ativo = "S"')));
       $this->userData('amostras', count(AmostrasModel::All('ativo = "S"')));
       $this->userData('contratos', count(ContratosModel::All('ativo = "S" AND finalizado = "N"')));
       $this->userData('etiquetas', count(EtiquetasModel::All('ativo = "S"')));
+      
+      $this->userData('ultimas_etiquetas', $etiquetas->get());
+      $this->userData('ultimos_contratos', $contratos->get());
+      
+
       Transaction::close();
 
       $this->userData('page_title','Dashboard | Home');

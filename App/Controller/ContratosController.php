@@ -30,11 +30,11 @@
         ];
 
       $contratos->fillable($colunas);
+      $contratos->innerJoin('lab_cliente','id','idcliente');
+      $contratos->innerJoin('lab_safra','id','idsafra');
       $contratos->where('lab_cliente.id','=',$id);
       $contratos->where('lab_contrato.ativo','=','S');
       $contratos->where('lab_contrato.finalizado','=','N');
-      $contratos->innerJoin('lab_cliente','id','idcliente');
-      $contratos->innerJoin('lab_safra','id','idsafra');
       $rs = $contratos->get();
 
       $cliente = ClientesModel::find($id,'id, nmcliente');

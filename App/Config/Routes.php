@@ -31,11 +31,14 @@ route::get('/sim', 'SimController@sim');
  *  Clientes
  **************************/
 route::get('/cliente','ClienteController@index');
+route::post('/cliente','ClienteController@store');
+route::delete('/cliente','ClienteController@delete');
+route::put('/cliente/{id}','ClienteController@edit');
+
 route::post('cliente/validate/cnpj','ClienteController@cnpj');
 route::post('/cliente/data','ClienteController@edit');
 route::post('/cliente/json','JsonController@gridCliente');
-route::post('/cliente','ClienteController@save');
-route::delete('/cliente/delete','ClienteController@delete');
+
 route::get('/cliente/csv','ClienteController@csv');
 /*************************
  *  Amostras
@@ -50,8 +53,9 @@ route::delete('/amostra','AmostrasController@delete');
  * Tipo de Amostras
  **************************/
 route::get('/tipo_amostra','TipoAmostrasController@index');
-route::post('/tipo_amostra/data','TipoAmostrasController@edit');
-route::post('/tipo_amostra/store','TipoAmostrasController@save');
+route::put('/tipo_amostra/{id}','TipoAmostrasController@edit');
+route::post('/tipo_amostra','TipoAmostrasController@save');
+route::delete('/tipo_amostra','TipoAmostrasController@delete');
 /*************************
  *  Contratos
  **************************/
@@ -71,11 +75,14 @@ route::post('/teste_amostra/loadview','AmostraTesteController@loadview');
  *  Etiquetas
  **************************/
 route::get('/etiqueta','EtiquetasController@index');
+route::post('/etiquetas','EtiquetasController@store');
 route::post('/etiqueta/search/contrato','EtiquetasController@search');
-route::post('/gerar-etiquetas','EtiquetasController@gerar');
-route::get('/etiqueta/print/all/cliente/{idcliente}/contrato/{idcontrato}/','EtiquetasController@viewAll');
-route::get('/etiqueta/list/cliente/{idcliente}/{idcontrato}/','EtiquetasController@listview');
+// listar
+route::get('/etiqueta/list/cliente/{idcliente}/contrato/{idcontrato}/setor/{setor}','EtiquetasController@listview');
+//imprimir
+route::get('/etiquetas/imprimir/cliente/{idcliente}/contrato/{idcontrato}/setor/{setor}','EtiquetasController@viewAll');
 route::get('/etiqueta/imprimir/{id}','EtiquetasController@printer');
+
 route::post('/etiqueta/validar','EtiquetasController@validarEtiqueta');
 
 /*************************
@@ -91,7 +98,7 @@ route::get('/movimentacao/{idestoque}/estoque/{idetiqueta}/editar', 'Enderecamen
  *  Operador
  **************************/
 route::post('/operador/get',"OperadorController@getOperador");
-route::get('/operador/{id}', "OperadorController@index");
+route::get('/operador', "OperadorController@index");
 /*************************
  *  Finalizar Contrato
  **************************/
@@ -122,6 +129,14 @@ route::delete('/safra', 'SafraController@delete');
  **************************/
 route::get('/relatorios','RelatoriosController@index');
 route::get('/relatorio/rastreabilidade/{idetiqueta}','RelatoriosController@rastreabilidade');
+
+
+/************************
+* API
+*************************/
+route::get('api/clientes',"API\Clientes@index");
+
+
 /*************************
  *  Resolve Router
  **************************/

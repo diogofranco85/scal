@@ -59,13 +59,64 @@
 
    </div>
 
-  <div class='col-md-12'>
+  <div class='col-md-6'>
     <div class="box">
         <div class="box-header with-border">
-          <h3 class="box-title">Quantidade de amostras x safra<h3>
+          <h3 class="box-title">Ultimas etiquetas geradas<h3>
         </div>
         <div class="box-body">
-            <p>Content<p>
+            <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Cód</th>
+                    <th>Cliente</th>
+                    <th>Contrato/Hibrido</th>
+                    <th>Setor</th>
+                    <th>Operador</th>
+                  </tr>
+                </thead>
+                  {% for ue in ultimas_etiquetas %}
+                  <tr>
+                      <td>{{ ue.idEtiquetas }}</td>
+                      <td>{{ ue.nmcliente }}</td>
+                      <td>{{ ue.numcontrato }}/{{ ue.hibrido }}</td>
+                      <td>{{ ue.setor == 'R' ? 'RECEBIMENTO' : 'TORRE' }}</td>
+                      <td>{{ ue.name }}</td>
+                  </tr>
+                  {% endfor %}
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+  </div>
+
+   <div class='col-md-6'>
+    <div class="box">
+        <div class="box-header with-border">
+          <h3 class="box-title">Ultimos Contratos<h3>
+        </div>
+        <div class="box-body">
+            <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Cliente</th>
+                    <th>Num Contrato</th>
+                    <th>Hibrido</th>
+                  </tr>
+                </thead>
+                  {% for uc in ultimos_contratos %}
+                  <tr>
+                      <td>{{ uc.nmcliente }}</td>
+                      <td>{{uc.numcontrato }}</td>
+                      <td>{{uc.hibrido }}</td>
+                  </tr>
+                  {% endfor %}
+                <tbody>
+
+                </tbody>
+            </table>
         </div>
     </div>
   </div>

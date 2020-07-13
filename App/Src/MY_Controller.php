@@ -38,7 +38,7 @@ class MY_Controller extends Controller{
         $this->userData('iconprint','fa fa-print fa-fw');
         $this->userData('iconview','fa fa-eye fa-fw');
 
-        $this->userData('datatable_class','table table-bordered table-responsive dataTable');
+        $this->userData('datatable_class','table table-bordered table-responsive dataTable table-condensed');
 
         $this->userData('limit_data','50');
 

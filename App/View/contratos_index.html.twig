@@ -17,6 +17,7 @@
 <div class="box-header">
   <h3 class="box-title">Listar Contratos</h3>
   <a href="#" class="{{ btnnew }} btnnew pull-right"><i class="{{ iconnew }}"></i> Novo</a>
+  <a href="#" onclick="window.history.back();" class="pull-right btn btn-flat bg-gray btn-sm"><i class="fa fa-angle-double-left"></i> Voltar</a>
 </div>
 
 <table class="{{ datatable_class }}" id="grid" data-page-length='{{ limit_data }}'>
@@ -36,10 +37,8 @@
                 <td>{{ contrato.descricao }}</td>
                 <td>
                     <div class="btn-group">
-                        <div class="btn-group">
                             <a href="#" post_id="{{ contrato.id }}" class="{{ btnedit }} btnedit" title="Editar dados do contrato"><i class="{{ iconedit }}"></i> Editar</a>
                             <a href="#" post_id="{{ contrato.id }}" class="{{ btnexc }} btndel" title="Excluir contrato"><i class="{{ iconexc }}"></i> Excluir</a>
-                        </div>
                     </div>
                 </td>
             </tr>

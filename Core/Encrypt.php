@@ -9,9 +9,8 @@ class Encrypt{
 
 
     public function getKey(){
-        require_once(ROOT.DS.'App'.DS.'Config'.DS.'application.php');
-        
-        $this->key = md5(ENCODE_KEY);
+                
+        $this->key = getenv('APP_SECRET_KEY');
     }
 
     public function encode($string){

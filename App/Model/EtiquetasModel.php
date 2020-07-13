@@ -19,14 +19,15 @@ class EtiquetasModel extends \Core\Model{
           'lab_contrato' => array(
               'id as "idcontrato"', 'numcontrato','hibrido'
           ),
-          'lab_etiquetas' => array('ativo')
+          'lab_etiquetas' => array('ativo, setor')
       );
 
       $this->fillable($colunas);
       $this->where('lab_etiquetas.ativo', '=','S');
       $this->innerJoin('lab_cliente','id','idcliente');
       $this->innerJoin('lab_contrato','id','idcontrato ');
-      $this->group('lab_contrato.id, lab_contrato.hibrido');
+      $this->group('lab_contrato.id, lab_contrato.hibrido, lab_etiquetas.setor');
+      $this->order('lab_cliente.nmcliente');
       return $this->get();
 
   }
