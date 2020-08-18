@@ -7,7 +7,7 @@
   use \App\Model\ClientesModel;
   use \App\Model\AmostrasModel;
   use \App\Model\ContratosModel;
-  use \Core\Database\Transaction;
+  use \Core\Database\Transaction2;
 
   class HomeController extends MY_Controller{
 

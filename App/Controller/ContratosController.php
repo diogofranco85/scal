@@ -44,7 +44,7 @@
       $url_back = $this->getURL('cliente');
 
 
-      $this->userData('page_title','<a href="'.$url_back.'"><i class="fa fa-arrow-circle-left"></i> Cliente</a> &raquo; Contratos &raquo; <strong>'. $cliente->nmcliente.'</strong>');
+      $this->userData('page_title','Contratos &raquo; <strong>'. $cliente->nmcliente.'</strong>');
       $this->userData('safras',$safra);
       $this->userData('contratos',$rs);
       $this->userData('codcliente', $cliente->id);

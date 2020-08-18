@@ -1,6 +1,9 @@
 # ignore files
+#.env
 **/.vscode/
 **/public/
 **/Log/*.html
 **/vendor/
-.env
+**/node_modules
+**/package.json
+**/yarn.lock
