@@ -1,0 +1,73 @@
+{% extends 'page.html.twig' %}
+
+{% block content %}
+
+  <div class="box-header">
+  <h3 class="box-title">Listando amostras ativas</h3>
+  </div>
+<table class="{{ datatable_class }}" id="grid" data-page-length='{{ limit_data }}'>
+  <thead>
+    <tr>
+      <th>Etiqueta</th>
+      <th>Setor</th>
+      <th>Cliente</th>
+      <th>Hibrido</th>
+      <th>Contrato</th>
+      <th>Safra</th>
+      <th>Armazenamento</th>
+      <th>Qde em Estoque</th>
+      <th>Qde enviada ao Cliente</th>
+      <th>Qde. descarte/perda</th>
+      <th>Dt.Amostra</th>
+      <th>Protocolo</th>
+      <th>Observação</th>
+      <th>Peso Amostra</th>
+      <th>Inicio Teste</th>
+      <th>Termíno Teste</th>
+    </tr>
+  </thead>
+  <tbody>
+        {% for grid in grids %}
+        <tr>
+            <td>{{ "%04d"|format(grid.idetiqueta) }}</td>
+            <td>{{ grid.setor == 'R' ? 'RECEBIMENTO' : 'TORRE' }}</td>
+            <td>{{ grid.nmcliente }}</td>
+            <td>{{ grid.hibrido }}</td>
+            <td>{{ grid.numcontrato }}</td>
+            <td>{{ grid.safra }}</td>
+            <td>{{ grid.armazenamento }}</td>
+            <td>{{ grid.peso_armazem|number_format(3,'.',',') }}
+            <td>{{ grid.peso_cliente|number_format(3,'.',',') }}</td>
+            <td>{{ grid.peso_descarte|number_format(3,'.',',') }}</td>
+            <td>{{ grid.dtamostra| date('d/m/Y') }}</td>
+            <td>{{ grid.protocolo }}</td>
+            <td>{{ grid.observacao }}</td>
+            <td>{{ grid.peso }}</td>
+            <td>{{ grid.dtinicio| date('d/m/Y') }}</td>
+            <td>{{ grid.dttermino| date('d/m/Y') }}</td>
+        </tr>
+        {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}
+
+{% block js %}
+  {{ js('datatables') }}
+    <script>
+         $(document).ready(function(){
+            var table = $('#grid').DataTable({
+                responsive: true,
+                dom: 'Bfrtip',
+                buttons: [
+                    'excel',
+                    'pdf',
+                    'print',
+                ],
+                language: {
+                    url: '{{ assets('bower_components/datatables.net/js/Portuguese-Brasil.json') }}'
+                }
+            });
+         });
+    </script>
+{% endblock %}

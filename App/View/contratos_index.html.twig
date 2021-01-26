@@ -16,6 +16,7 @@
 {% block content %}
 <div class="box-header">
   <h3 class="box-title">Listar Contratos</h3>
+   <a href="#" onclick="window.history.back();" class="pull-right btn btn-flat bg-gray btn-sm"><i class="fa fa-angle-double-left"></i> Voltar</a>
   <a href="#" class="{{ btnnew }} btnnew pull-right"><i class="{{ iconnew }}"></i> Novo</a>
 </div>
 
@@ -202,40 +203,63 @@
             dataType: 'JSON',
             success: function(data){
               if(data.retorno == 200){
-                alert('dados salvo com sucesso !!');
+                bootbox.alert('<h4 class="text-success">Dados salvo com sucesso !!</h4>', () => {
+                  $('.modal').modal('hide');
+                  location.reload(true);
+                });
               }
-              $('.modal').modal('hide');
-              location.reload(true);
+              
             },
             error: function (data) {
+              bootbox.alert('Houve um error ao processar a requisição !!');
               console.log('Error:', data);
               $('.btn-save').html('Salvar');
             }
           })
         })
 
-        $('.btnend').on('click',function(e){
+        $('.btndel').on('click',function(e){
             e.preventDefault();
 
             verificarlogin();
 
             
-            var msg = confirm('Se você realmente pensa em finalizar esse contrato clique em "OK"');
-            if(msg == true){
-                $.ajax({
-                    url: "{{ url('/contrato/delete') }}",
-                    data: { id: $(this).attr('post_id')},
-                    method: 'post',
-                    dataType: 'json',
-                    success: function(data){
-                        if(data.code == 1){
-                            alert('Esse contrato possui amostra vinculado');
-                        }else{
-                            location.reload(true);
-                        }
-                    }
-                })
-            }
+            bootbox.confirm({
+              title:"Excluir Contrato",
+              message: '<h4>Se você realmente pensa em excluir esse contrato clique em "CONFIRMAR"</h4>',
+              buttons: {
+                cancel: {
+                  label: '<i class="fa fa-times"></i> Cancelar',
+                },
+                confirm: {
+                  label: '<i class="fa fa-check"></i> Confirma'
+                }
+              },
+              callback: (result) => {
+                    console.log('result', result);
+                    if(result == true){
+                      $.ajax({
+                          url: "{{ url('/contrato/delete') }}",
+                          data: { id: $(this).attr('post_id')},
+                          method: 'delete',
+                          dataType: 'json',
+                          success: function(data){
+                            console.log('data',data);
+                              if(data.status === 400){
+                                  bootbox.alert('<h4 class="text-danger">Esse contrato não pode ser excluído pois possui amostra cadastrada</h4>');
+                              }else if(data.status === 500 ){
+                                  bootbox.alert('<h4 class="text-danger">'+data.message+'</h4>');
+                              }else{
+                                  bootbox.alert('<h4>Contrato excluido com sucesso</h4>', () => {
+                                    location.reload(true)
+                                  });;
+                              }
+                          }
+                      })
+                  }
+                }
+            });
+
             return false;
         })
 

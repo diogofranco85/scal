@@ -82,6 +82,88 @@ class EnderecamentoController extends MY_Controller
 
     }
 
+    public function informeEnvioAoDescarte($id){
+        try{
+            Transaction::open('valorem');
+
+                $estoque = new EstoqueModel();
+                $estoque->where('id','=', $id);
+                $rs = $estoque->get();
+
+                foreach( $rs as $registro){
+                    $peso = $registro['peso_armazem'];
+                    $peso_enviado_em_estoque = $registro['peso_descarte'];
+                }
+
+                $peso_informado = $this->input->post('quantidade');
+
+                if($peso_informado > $peso ){
+                    $this->jsonResponse(['status' => 400, 'message' => 'O peso informado é maior que o peso armazenado' ]);
+                    return;
+                }
+
+                $peso_armazenado = $peso - $peso_informado;
+                $peso_descartado = $peso_informado + $peso_enviado_em_estoque;
+
+                $atualizarEstoque = EstoqueModel::find($id);
+                $atualizarEstoque->peso_armazem = $peso_armazenado;
+                $atualizarEstoque->peso_descarte =  $peso_descartado;
+                $atualizarEstoque->update();
+                
+                $this->jsonResponse(['status' => 200, 'message' => 'Amostras descartada/perdida informada com sucesso' ]);
+            Transaction::close();
+    
+            
+        }catch(\Exception $e){
+            Transaction::rollback();
+            $this->jsonResponse(['status' => 500, 'message' => $e->getTrace() ]);
+        }
+       
+    }
+
+    public function informeEnvioAoCliente($id){
+        try{
+            Transaction::open('valorem');
+
+                $estoque = new EstoqueModel();
+                $estoque->where('id','=', $id);
+                $rs = $estoque->get();
+
+                foreach( $rs as $registro){
+                    $peso = (int) $registro['peso_armazem'];
+                    $peso_enviado_em_estoque = (int) $registro['peso_cliente'];
+                }
+
+                $peso_informado = (int) $this->input->post('quantidade');
+
+                if($peso_informado > $peso ){
+                    $this->jsonResponse([
+                        'status' => 400, 
+                        'peso_informado' => $peso_informado,
+                        'peso'=> $peso,
+                        'message' => 'O peso informado é maior que o peso armazenado' ]);
+                    return;
+                }
+
+                $peso_armazenado = $peso - $peso_informado;
+                $peso_descartado = $peso_informado + $peso_enviado_em_estoque;
+
+                $atualizarEstoque = EstoqueModel::find($id);
+                $atualizarEstoque->peso_armazem = $peso_armazenado;
+                $atualizarEstoque->peso_cliente =  $peso_descartado;
+                $atualizarEstoque->update();
+                
+                $this->jsonResponse(['status' => 200, 'message' => 'Amostras enviada ao cliente informada com sucesso' ]);
+            Transaction::close();
+    
+            
+        }catch(\Exception $e){
+            Transaction::rollback();
+            $this->jsonResponse(['status' => 500, 'message' => $e->getTrace() ]);
+        }
+       
+    }
+
     public function status(){
         Transaction::open('valorem');
         $status =  \App\Model\StEnderecamentoModel::All();
@@ -123,7 +205,7 @@ class EnderecamentoController extends MY_Controller
                 $this->jsonResponse(['status' => 200, 'message' => 'OK']);
             }  
         }catch(Exception $e){
-            $this->jsonResponse(['status' => 400, 'message' => $e->getMessage ]);
+            $this->jsonResponse(['status' => 400, 'message' => $e->getMessage() ]);
         }
         
 

@@ -98,7 +98,11 @@ class Model{
     }
 
     public function toArray(){
-        return $this->object;
+        try{
+            return $this->object;
+        }catch(\Exception $e){
+            echo json_encode(['status' => 500, 'message' => $e->getMessage()]);
+        }
     }
 
     public static function all($conditions = '', int $limit = 0, int $offset = 0)
@@ -200,8 +204,7 @@ class Model{
         }catch(\PDOException $e){
             $log = new LoggerHTML('database.html');
             $log->write('Model:' . get_called_class() .' <br> Erro ao consultar: '.$e->getMessage() . "<br> <b>SQL:</b><span style='color: red'>{$this->sql}</span>");
-            echo $e->getMessage();
-            exit();
+            new \Core\Exception($e);
         }
             
     }
@@ -310,6 +313,48 @@ class Model{
         $class = $class::find($this->id);
         $class->ativo = 'N';
         $class->update();
+    }
+
+    public function leftOuterJoin($table, $idtable, $idRerefence, $table_reference = null)
+    {   
+
+        if(is_array($table)){
+            $tablename = $table['table'];
+            $as = ' AS '.$table['as'];
+            $alias = $table['as'];
+        }else{
+            $as = '';
+            $tablename = $table;
+            $alias = $table;
+        };
+
+        if(is_null($table_reference))
+        {
+            $table_reference = $this->tablename;
+        }
+
+        $this->joins[] = " LEFT OUTER JOIN {$tablename} {$as} ON {$alias}.{$idtable} = ".$table_reference.".{$idRerefence} ";
+    }
+
+    public function rightOuterJoin($table, $idtable, $idRerefence, $table_reference = null)
+    {   
+
+        if(is_array($table)){
+            $tablename = $table['table'];
+            $as = ' AS '.$table['as'];
+            $alias = $table['as'];
+        }else{
+            $as = '';
+            $tablename = $table;
+            $alias = $table;
+        };
+
+        if(is_null($table_reference))
+        {
+            $table_reference = $this->tablename;
+        }
+
+        $this->joins[] = " LEFT OUTER JOIN {$tablename} {$as} ON {$alias}.{$idtable} = ".$table_reference.".{$idRerefence} ";
     }
 
     public function innerJoin($table, $idtable, $idRerefence, $table_reference = null)

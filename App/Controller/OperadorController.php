@@ -26,7 +26,7 @@ class OperadorController extends MY_Controller
     public function getOperador()
     {
         Transaction::open('valorem');
-        $codigo = $this->request->request->get('id');
+        $codigo = setint($this->request->request->get('id'));
         $operador = OperadorModel::all("cod = {$codigo}");
         
         if(count($operador) > 0){

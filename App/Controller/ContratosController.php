@@ -44,7 +44,7 @@
       $url_back = $this->getURL('cliente');
 
 
-      $this->userData('page_title','<a href="'.$url_back.'"><i class="fa fa-arrow-circle-left"></i> Cliente</a> &raquo; Contratos &raquo; <strong>'. $cliente->nmcliente.'</strong>');
+      $this->userData('page_title','Clientes</a> &raquo; Contratos &raquo; <strong>'. $cliente->nmcliente.'</strong>');
       $this->userData('safras',$safra);
       $this->userData('contratos',$rs);
       $this->userData('codcliente', $cliente->id);
@@ -94,20 +94,34 @@
       }
 
       public function delete(){
+        try{
+          Transaction::open('valorem');
+          
+            $id = $this->request->request->get('id');
+            
+            $amostra = new AmostrasModel();
+            $amostra->where('idcontrato','=', $id);
+            $rs_amostra = $amostra->get();
 
-        Transaction::open('valorem');
-        $id = $this->request->request->get('id');
-        $amostra = new AmostrasModel();
-        $amostra->where('idcontrato','=', $id);
-        $rs = $amostra->get();
+            $cont = count($rs_amostra);
 
-        if(count($rs)){
-            echo json_encode(array('code' => 1));
-        }else{
-            echo json_encode(array('code' => 0));
+            if($cont > 0){
+              echo json_encode(['status' => 400]);
+              return;
+            }
+
+            $contrato = ContratosModel::find($id);
+            $contrato->ativo = 'N';
+            $contrato->update();
+           
+            echo json_encode(array('status' => 200));
+
+          Transaction::close();
+        }catch(\Exception $e){
+          echo json_encode(array('status' => 500, 'message' => $e->getMessage()));
+          Transaction::rollback();
         }
-
-        Transaction::close();
+        
 
       }
 

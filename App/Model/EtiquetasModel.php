@@ -19,7 +19,7 @@ class EtiquetasModel extends \Core\Model{
           'lab_contrato' => array(
               'id as "idcontrato"', 'numcontrato','hibrido'
           ),
-          'lab_etiquetas' => array('ativo')
+          'lab_etiquetas' => array('ativo','setor')
       );
 
       $this->fillable($colunas);

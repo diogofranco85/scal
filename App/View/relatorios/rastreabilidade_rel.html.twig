@@ -5,10 +5,19 @@
     <section class="invoice">
         {% for etiqueta in etiquetas %}
         <div class="row">
-            <div class="col-xs-12">
-                <h2 class="page-header">Rastreabilidade</h2>
+            <div class="col-xs-2">
+                <img src="{{ url('/Assets/img/logo.jpg') }}" alt="Valorem" title="Valorem"  width="100%" class="img-responsive"/>
+            </div>
+            <div class="col-xs-8">
+                <h2 class="page-header">Relatório - Rastreabilidade</h2>
                 <p class="pull-right">Gerado em: {{ now|date('d/m/Y H:i:s') }}
-                <h3>{{ etiqueta.nmcliente }}</h3>
+            </div>
+        </div>
+        <div class='row'>
+            <div class="col-xs-12">
+                 <h4>
+                    Cliente: <strong>{{ etiqueta.nmcliente }}</strong>
+                 </h4>
             </div>
         </div>
 

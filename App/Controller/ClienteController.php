@@ -20,42 +20,51 @@ class ClienteController extends MY_Controller
 
       $clientes = ClientesModel::all('ativo = "S"');
       $this->userData('clientes',$clientes);
+      $this->userData('page_title','Clientes');
       $this->render('cliente_index');
       Transaction::close();
 
     }
 
-    public function edit()
+    public function edit($id)
     {
 
+     try{
       Transaction::open('valorem');
-      $cliente = ClientesModel::find($this->input->post('id'),'id,nmcliente,numcliente, descricao ,codprotheus');
+      
+      $cliente = ClientesModel::find($id,'id,nmcliente, descricao');
       $ddCliente = $cliente->toArray();
-      echo json_encode($ddCliente);
+
+      $this->jsonResponse(['status' => 200, 'result' => $ddCliente ]);
+      
       Transaction::close();
 
+     }catch(Exception $e){
+
+      $this->jsonResponse(['status' => 400, 'message' => $e->getMessage() ]);
+     
+    }
     }
 
-    public function save()
+    public function store()
     {
         try{
           Transaction::open('valorem');
           
-          $verificaCliente = new ClientesModel();
-          $verificaCliente->where('nmcliente','=', $this->input->body('nmcliente'));
-          $verificaCliente->where('ativo','=', 'S');
-          $rs_verificaCliente = $verificaCliente->get();
-
-          if(count($rs_verificaCliente) > 0){
-            $this->jsonResponse(['status' => '400', 'message' => 'Cliente já existe na banco' ]);
-            return;
-          }
-
-
           $id = $this->input->body('id');
 
           $usuario = $this->session->usuario;
           if($id == ''){
+
+            $verificaCliente = new ClientesModel();
+            $verificaCliente->where('nmcliente','=', $this->input->body('nmcliente'));
+            $verificaCliente->where('ativo','=', 'S');
+            $rs_verificaCliente = $verificaCliente->get();
+
+            if(count($rs_verificaCliente) > 0){
+              $this->jsonResponse(['status' => '400', 'message' => 'Cliente já existe na banco' ]);
+              return;
+            }
 
             $clientes = new ClientesModel();
             $clientes->nmcliente = $this->input->body('nmcliente');
@@ -63,6 +72,8 @@ class ClienteController extends MY_Controller
             $clientes->created_at = date('Y-m-d h:m:s');
             $clientes->created_id = $usuario['idUsuario'];
             $clientes->create();
+
+            $this->jsonResponse(['status' => 200, 'message' => 'Cliente <strong>adicionando</strong> com sucesso' ]);
 
           }else{
 
@@ -72,11 +83,13 @@ class ClienteController extends MY_Controller
             $clientes->updated_at = date('Y-m-d h:m:s');
             $clientes->updated_id = $usuario['idUsuario'];
             $clientes->update();
+
+            $this->jsonResponse(['status' => 200, 'message' => 'Cliente <strong>Atualizado</strong> com sucesso' ]);
             
           }
           Transaction::close();
           
-          $this->jsonResponse(['status' => '200', 'message' => 'Cliente adicionando com sucesso' ]);
+          
 
         }catch(Exception $e){
             $this->jsonResponse(['status' => '500', 'message' => $e->getMessage() ], 500);

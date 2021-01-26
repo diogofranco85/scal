@@ -11,6 +11,8 @@
   <link rel="stylesheet" href="{{ assets('vendors/adminlte/css/AdminLTE.min.css') }}">
   <link rel="stylesheet" href="{{ assets('vendors/adminlte/css/skins/skin-green.min.css') }}">
   <link rel="stylesheet" href="{{ assets('css/applications.css') }}">
+  <link rel="stylesheet" href="{{ assets('css/prisma.css') }}">
+  <script src="{{ assets('js/prism.js') }}"></script>
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
@@ -127,13 +129,13 @@
           <!-- fim message -->
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <img src="{{ url_base }}/Assets/img/profiles/{{ usuario.usuario }}.jpg" onerror="this.onerror=null;this.src='{{ url_base }}/Assets/img/user2-160x160.jpg';" class="user-image" alt="User Image">
+              <img src="{{ url_base }}/Assets/img/profiles/{{ usuario.usuario }}.jpg" onerror="this.onerror=null;this.src='{{ url_base }}/Assets/img/valorem.jpg';" class="user-image" alt="User Image">
               <span class="hidden-xs">{{ usuario.nome }}</span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
               <li class="user-header">
-                <img src="{{ url_base }}/Assets/img/profiles/{{ usuario.usuario }}.jpg" onerror="this.onerror=null;this.src='{{ url_base }}/Assets/img/user2-160x160.jpg';" class="img-circle" alt="User Image">
+                <img src="{{ url_base }}/Assets/img/profiles/{{ usuario.usuario }}.jpg" onerror="this.onerror=null;this.src='{{ url_base }}/Assets/img/valorem.jpg';" class="img-circle" alt="User Image">
 
                 <p>
                   {{ usuario.nome }}
@@ -164,7 +166,7 @@
       <!-- Sidebar user panel -->
       <div class="user-panel">
         <div class="pull-left image">
-          <img src="{{ url_base }}/Assets/img/profiles/{{ usuario.usuario }}.jpg" onerror="this.onerror=null;this.src='{{ url_base }}/Assets/img/user2-160x160.jpg';" class="img-circle" alt="User Image">
+          <img src="{{ url_base }}/Assets/img/profiles/{{ usuario.usuario }}.jpg" onerror="this.onerror=null;this.src='{{ url_base }}/Assets/img/valorem.jpg';" class="img-circle" alt="User Image">
         </div>
         <div class="pull-left info">
           <p>{{ usuario.nome }}</p>
@@ -186,7 +188,7 @@
         <li><a href="{{ url('/tipo_amostra') }}"><i class="fa fa-share-alt text-green"></i>Tipos de Amostras</a></li>
         <li><a href="{{ url('/safra') }}"><i class="fa fa-folder-open text-green"></i>Safra</a></li>
         <li><a href="{{ url('/relatorios') }}"><i class="fa fa-file-text text-green"></i>Relatórios</a></li>
-
+         {% if usuario.perfil == 3 %}
         <li class="treeview">
           <a href="#">
             <i class="fa fa-gears"></i> <span>Configurações</span>
@@ -200,6 +202,7 @@
             <li><a href="{{ url_base }}/Assets/index2.html"><i class="fa fa-circle-o"></i> Configurações do sistema</a></li>
           </ul>
         </li>
+        {% endif %}
         {% if usuario.perfil == 2 %}
         <li class="treeview">
           <a href="#">

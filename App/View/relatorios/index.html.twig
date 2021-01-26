@@ -7,16 +7,50 @@
             <span class="info-box-icon"><i class="ion ion-ios-pricetag-outline"></i></span>
 
             <div class="info-box-content">
-                <span class="info-box-text">Rastreabilidade</span>
+                <span class="info-box-text">Relatório em tela</span>
 
                 <div class="progress">
                 <div class="progress-bar" style="width: 50%"></div>
                 </div>
-                    <a href="{{ url('/relatorio/rastreabilidade') }}" class="col-md-12 btn btn-default btn-flat">Gerar</a>
+                    <input type="number" id="input-id-rel" class="form-control">
+                    <a href="{{ url('/relatorio/rastreabilidade') }}" id="geraRelatorioHtml" class="col-md-12 btn btn-default btn-flat">Gerar</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="info-box bg-gray">
+            <span class="info-box-icon"><i class="ion ion-ios-pricetag-outline"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">Relatório em excel</span>
+
+                <div class="progress">
+                <div class="progress-bar" style="width: 50%"></div>
+                </div>
+                    <a href="{{ url('/relatorio/excel') }}" id="geraRelatorioExcel" class="col-md-12 btn btn-default btn-flat">Gerar</a>
                 </div>
             </div>
         </div>
     </div>
    
 
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(document).ready(function(){
+
+            $('#geraRelatorioHtml').click(function(event){
+                event.preventDefault();
+                let identificador = $('#input-id-rel').val();
+                let endpoint = `/relatorio/rastreabilidade/${identificador}`;
+                
+                window.open(`{{ url( '${endpoint}' ) }}`,'_blank');
+
+                return false;
+            })
+
+        })
+    </script>
 {% endblock %}

@@ -29,7 +29,7 @@
     <div class="col-md-6">
         <div class="form-group">
             <label for="idarmazenamento">Armazenamento</label>
-            <input type="text" class="form-control" name="armazenamento" id="armazenamento"/>
+            <input type="text" class="form-control" name="armazenamento" id="armazenamento" required/>
         </div>
     </div>
 
@@ -56,21 +56,24 @@
      <div class="col-md-4">
         <div class="form-group">
             <label for="pesoarmazem">Peso Armazenado</label>
-            <input type="number" class="form-control" name="pesoarmazem" id="pesoarmazem" step="any">
+            <div class="input-group">
+            <span class="input-group-addon">KG</span>
+            <input type="number" class="form-control" name="pesoarmazem" id="pesoarmazem" step="any" required>
+            </div>
         </div>
     </div>
 
      <div class="col-md-4">
         <div class="form-group">
             <label for="pesocliente">Peso enviado ao Cliente</label>
-            <input type="number" class="form-control" name="pesocliente" id="pesocliente" step="any">
+            <input type="hidden" value="0"  class="form-control" name="pesocliente" id="pesocliente" step="any">
         </div>
     </div>
 
     <div class="col-md-4">
         <div class="form-group">
             <label for="pesodescarte">Peso Descartado / Perda</label>
-            <input type="number" step="any" class="form-control" name="pesodescarte" id="pesodescarte">  
+            <input type="hidden" value="0" step="any" class="form-control" name="pesodescarte" id="pesodescarte">  
         </div>
     </div>
 </div>
