@@ -315,6 +315,48 @@ class Model{
         $class->update();
     }
 
+    public function leftOuterJoin($table, $idtable, $idRerefence, $table_reference = null)
+    {   
+
+        if(is_array($table)){
+            $tablename = $table['table'];
+            $as = ' AS '.$table['as'];
+            $alias = $table['as'];
+        }else{
+            $as = '';
+            $tablename = $table;
+            $alias = $table;
+        };
+
+        if(is_null($table_reference))
+        {
+            $table_reference = $this->tablename;
+        }
+
+        $this->joins[] = " LEFT OUTER JOIN {$tablename} {$as} ON {$alias}.{$idtable} = ".$table_reference.".{$idRerefence} ";
+    }
+
+    public function rightOuterJoin($table, $idtable, $idRerefence, $table_reference = null)
+    {   
+
+        if(is_array($table)){
+            $tablename = $table['table'];
+            $as = ' AS '.$table['as'];
+            $alias = $table['as'];
+        }else{
+            $as = '';
+            $tablename = $table;
+            $alias = $table;
+        };
+
+        if(is_null($table_reference))
+        {
+            $table_reference = $this->tablename;
+        }
+
+        $this->joins[] = " LEFT OUTER JOIN {$tablename} {$as} ON {$alias}.{$idtable} = ".$table_reference.".{$idRerefence} ";
+    }
+
     public function innerJoin($table, $idtable, $idRerefence, $table_reference = null)
     {   
 
@@ -435,10 +477,6 @@ class Model{
         $sql = ("select max({$this->primarykey}) as {$this->primarykey} from {$this->tablename}");
         $row = $this->db->execute($sql);
         return $row[0][$this->primarykey];
-    }
-
-    public function limit(int $value){
-        $this->limit = $value;
     }
 
     public function __clone(){

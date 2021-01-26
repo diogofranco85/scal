@@ -53,12 +53,12 @@
 
 {% block js %}
     {{ js('datatables') }}
-    {{ js('toastr') }}
+  
     <script>
        $(document).ready(function(){
           
-          var groupColumn =0;
-       var table = $('#grid').DataTable({
+        var groupColumn =0;
+        var table = $('#grid').DataTable({
          responsive: true,
           dom: 'Bfrtip',
           buttons: [
@@ -104,37 +104,48 @@
 
 
         $('a.btnfinalizar').click(function(event){
+
             event.preventDefault();
-
             verificarlogin();
-            
             const url = $(this).attr('href');
-            $.get(url, function(data){
-                if(data.status === 200){
-                    toastr.success(data.message,'Valorem SCAL', { positionClass: "toast-top-center",});
-                    let reload = setInterval(() => {
-                            location.reload(true);
-                        }, 1000);
-                }else if (data.status === 404){ 
-                    const msg = prompt('Motivo para finalizar o contrato: \n Digite: \n 1 - Retirada Insuficiente \n 2 - Não teve amostra');
-                    if(msg !== null){
-                        $.get(`${url}/justify`, { msg }, function(data){
-                            
-                            if(data.status === 200){
-                                toastr.success(data.message,'Valorem SCAL', { positionClass: "toast-bottom-full-width",});
-                                let reload = setInterval(() => {
-                                    location.reload(true);
-                                }, 1000);
-                            } 
-                        });
-                    }else{
-                        toastr.warning('O contrato não foi finalizado. Ação cancelada','Valorem SCAL', { positionClass: "toast-top-center"});
-                    } 
-                }
-            })
-            return false;
-        })   
 
+
+              $.get(url, (data) => {
+                 if(data.status === 200){
+                    bootbox.alert(data.message, function(){
+                        location.reload(true);
+                   })
+                 }else{
+                    bootbox.prompt({
+                        title: 'Finalizar Contrato',
+                        message:'Não foi utilizado todas as etiquetas ativas. Favor informar o motivo',
+                        value: 1,
+                        inputType: 'radio',
+                        inputOptions:[
+                            { 
+                                text: 'Retirada Insulficiente',
+                                value: '1',
+                            },
+                            { 
+                                text: 'Não teve amostra',
+                                value: '2',
+                            }],
+                        callback: (result) => {
+                            $.get(`${url}/justify`, { result }, function(data){
+                            
+                                if(data.status === 200){
+                                    bootbox.alert('<h4>Contrato finalizado com sucesso</h4>', function(){
+                                        location.reload(true);
+                                    })
+                                } 
+                            });
+                        }
+                    })
+                 }
+              })
+        });
+
+        
         $('a.btnReabrir').click(function(event){
             event.preventDefault();
 
@@ -143,10 +154,9 @@
             const url = $(this).attr('href');
             $.get(url, function(data){
                if(data.status === 200){
-                    toastr.success(data.message,'Valorem SCAL', { positionClass: "toast-top-center",});
-                    let reload = setInterval(() => {
-                        location.reload(true);
-                    }, 1000);
+                    bootbox.alert('<h4>Contrato reaberto com sucesso</h4>', () => {
+                         location.reload(true);
+                    });
                 } 
                 
             })

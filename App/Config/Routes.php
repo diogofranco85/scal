@@ -6,6 +6,7 @@ route::get('/', 'HomeController@indexAction');
 route::get('/dashboard', 'HomeController@indexAction');
 route::get('/logs-de-erros-no-model','HomeController@logsmodel');
 route::get('/logs-de-erros-do-php','HomeController@errorsphp');
+
 /*************************
  * Usuarios
  **************************/
@@ -62,7 +63,7 @@ route::delete('/tipo_amostra','TipoAmostrasController@delete');
 route::get('/contratos/view/{id}', 'ContratosController@index');
 route::post('/contrato/data','ContratosController@edit');
 route::post('/contrato/store','ContratosController@save');
-route::post('/contrato/delete','ContratosController@delete');
+route::delete('/contrato/delete','ContratosController@delete');
 /*************************
  *  Teste
  **************************/
@@ -75,14 +76,11 @@ route::post('/teste_amostra/loadview','AmostraTesteController@loadview');
  *  Etiquetas
  **************************/
 route::get('/etiqueta','EtiquetasController@index');
-route::post('/etiquetas','EtiquetasController@store');
 route::post('/etiqueta/search/contrato','EtiquetasController@search');
-// listar
-route::get('/etiqueta/list/cliente/{idcliente}/contrato/{idcontrato}/setor/{setor}','EtiquetasController@listview');
-//imprimir
-route::get('/etiquetas/imprimir/cliente/{idcliente}/contrato/{idcontrato}/setor/{setor}','EtiquetasController@viewAll');
+route::post('/gerar-etiquetas','EtiquetasController@gerar');
+route::get('/etiqueta/print/all/cliente/{idcliente}/contrato/{idcontrato}/','EtiquetasController@viewAll');
+route::get('/etiqueta/list/cliente/{idcliente}/{idcontrato}/','EtiquetasController@listview');
 route::get('/etiqueta/imprimir/{id}','EtiquetasController@printer');
-
 route::post('/etiqueta/validar','EtiquetasController@validarEtiqueta');
 
 /*************************
@@ -94,11 +92,14 @@ route::get('/enderecamento/fields','EnderecamentoController@loadfields');
 route::post('/enderecamento/{idcliente}/store','EnderecamentoController@store');
 route::post('/enderecamento/validar/etiqueta', 'EnderecamentoController@validar');
 route::get('/movimentacao/{idestoque}/estoque/{idetiqueta}/editar', 'EnderecamentoController@edit');
+route::post('/movimentacao/enviaraocliente/{idestoque}', 'EnderecamentoController@informeEnvioAoCliente');
+route::post('/movimentacao/descarte/{idestoque}', 'EnderecamentoController@informeEnvioAoDescarte');
+
 /*************************
  *  Operador
  **************************/
 route::post('/operador/get',"OperadorController@getOperador");
-route::get('/operador', "OperadorController@index");
+route::get('/operador/{id}', "OperadorController@index");
 /*************************
  *  Finalizar Contrato
  **************************/
@@ -130,13 +131,7 @@ route::delete('/safra', 'SafraController@delete');
 route::get('/relatorios','RelatoriosController@index');
 route::get('/relatorio/rastreabilidade/{idetiqueta}','RelatoriosController@rastreabilidade');
 
-
-/************************
-* API
-*************************/
-route::get('api/clientes',"API\Clientes@index");
-
-
+route::get('/relatorio/excel','RelatoriosController@relatorioExcel');
 /*************************
  *  Resolve Router
  **************************/

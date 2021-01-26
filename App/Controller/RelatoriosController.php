@@ -96,4 +96,40 @@ class RelatoriosController extends MY_Controller {
         $this->render('relatorios/rastreabilidade_rel');
     }
 
+    function relatorioExcel(){
+        try{
+            Transaction::open('valorem');
+
+                $colunas = [
+                    'lab_estoque' => ['idetiqueta', 'armazenamento', 'peso_armazem', 'peso_cliente', 'peso_descarte'],
+                    'lab_etiquetas' => ['id as lab_etiqueta_id', 'setor'],
+                    'lab_cliente' => ['nmcliente'],
+                    'lab_amostra' => ['dtamostra', 'protocolo', 'observacao', 'peso', 'campo'],
+                    'lab_contrato' => ['hibrido', 'numcontrato'],
+                    'lab_safra' => ['descricao as safra'],
+                    'lab_teste' => ['dtinicio', 'dttermino']
+                ];
+
+                $etiqueta = new EtiquetasModel();
+                $etiqueta->fillable($colunas);
+                $etiqueta->leftOuterJoin('lab_cliente','id','idcliente' );
+                $etiqueta->leftOuterJoin('lab_contrato','idcliente','id', 'lab_cliente');
+                $etiqueta->leftOuterJoin('lab_estoque','idetiqueta','id');
+                $etiqueta->leftOuterJoin('lab_amostra', 'id', 'idcontrato');
+                $etiqueta->leftOuterJoin('lab_safra', 'id', 'idsafra', 'lab_contrato');
+                $etiqueta->leftOuterJoin('lab_teste', 'idetiqueta', 'id');
+                $etiqueta->leftOuterJoin('lab_tipoamostra', 'id', 'idtipoamostra', 'lab_amostra');
+                $etiqueta->group('lab_estoque.idetiqueta');
+                $etiqueta->where('lab_estoque.idetiqueta', '<>', '');
+                $rs = $etiqueta->get();
+
+                $this->userData('grids', $rs );
+                $this->render('relatorios/excel');
+
+            Transaction::close();
+        }catch(\Exception $e){
+            $this->jsonResponse(['status' => 500, 'message' => $e->getTrace() ]);
+        }
+    }
+
 }
